@@ -13,20 +13,24 @@
 
         var me;
         var roomId = osql.getParam('roomId');
+        roomId = Number(roomId);
+        console.log(roomId);
 
         $(document).ready(async function () {
             me = await osql.getMe();
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
+            var sql = `select * from Participation where roomid = ${roomId};`
+            var object = await osql.connect(sql);
+            var order = object.length + 1;
+            console.log(order);
+            console.log(me.studentid);
+            sql = `insert into Participation (userid, roomid, order) values(${me.studentid}, '${roomId}','${object.length + 1}', now());`;
+            var par = await osql.connectInsert(sql);
+            console.log(par);
 
-            var sql = `select * from Rooms where id = ${roomId};`;
-            var objects = await osql.connect(sql);
+            document.getElementById('roomname').innerHTML = roomId;
 
-            var room = objects[0];
-            document.getElementById('roomname').innerHTML = room.name;
-
-            await refreshComments();
-            setInterval(refreshComments, 2000);
         });
 
         async function newComment() {
@@ -35,26 +39,6 @@
             var commentId = await osql.connectInsert(sql);
             console.log(commentId);
 
-            await refreshComments();
-        }
-
-        async function refreshComments() {
-            var sql = `select * from Comments where roomId = ${roomId} order by time desc limit 10;`;
-            var objects = await osql.connect(sql);
-            console.log(objects);
-            var html = '';
-            html = html + '<table border="1">';
-            for (var i = 0; i < objects.length; i++) {
-                html = html + '<tr>';
-                var object = objects[i];
-                html = html + `<td>${object.id}</td>`;
-                html = html + `<td>${object.time}</td>`;
-                html = html + `<td>${object.userId}</td>`;
-                html = html + `<td>${object.comment}</td>`;
-                html = html + '</tr>';
-            }
-            html = html + '</table>';
-            document.getElementById('comments').innerHTML = html;
         }
 
     </script>
@@ -62,7 +46,7 @@
 </head>
 
 <body>
-    <h1>talkroom <span id="roomname"></span></h1>
+    <h1>Room <span id="roomname"></span></h1>
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="index.html">top</a>
