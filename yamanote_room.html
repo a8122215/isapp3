@@ -59,6 +59,7 @@
             html = html + '</table>';
             document.getElementById('menber').innerHTML = html;
 
+            setInterval(idou, 1000);
         });
 
         async function newComment() {
@@ -76,6 +77,15 @@
             sql = `update Rooms set turn = 1 where id =  ${roomId};`;
             var Turn = await osql.connectInsert(sql);
         }
+
+        async function idou() {
+            var sql = `select * from Rooms where roomid = ${roomId};`
+            var object = await osql.connect(sql);
+            if (object.turn != 0) {
+                window.location.href = `yamanote_startroom.html?roomId=${roomId}`
+            }
+        }
+
 
     </script>
 
