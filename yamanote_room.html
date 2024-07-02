@@ -73,7 +73,8 @@
             var odai = document.getElementById('odai').value;
             var sql = `update Rooms set topics = '${odai}' where id =  ${roomId};`;
             var Odai = await osql.connectInsert(sql);
-            console.log(Odai);
+            sql = `update Rooms set turn = 1 where id =  ${roomId};`;
+            var Turn = await osql.connectInsert(sql);
         }
 
     </script>
