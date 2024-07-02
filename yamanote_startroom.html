@@ -40,7 +40,20 @@
         }
 
         async function seisei() {
+            var sql = `select * from Rooms where id = ${roomId};`
+            var objects = await osql.connect(sql);
+            var turn = objects.turn;
+            sql = `select * from Participation where roomid = ${roomId};`
+            objects = await osql.connect(sql);
+            var ninzu = objects.length
+            sql = `select * from Participation where id = ${roomId} AND userid = ${me.studentid};`
+            objects = await osql.connect(sql);
+            var order = objects.orders
 
+            var html = '';
+            if (turn % ninzu == order) {
+                html = html + '<input id="kaitou" type="text">< button onclick = "kaitou()" > 回答</button >'
+            }
         }
 
 
@@ -56,8 +69,6 @@
     </div>
     <hr>
     <br>
-    <input id="kaitou" type="text">
-    <button onclick="createRoom()">回答</button>
     <hr>
     <div id="menber"></div>
 </body>
