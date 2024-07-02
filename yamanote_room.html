@@ -17,17 +17,29 @@
         console.log(roomId);
 
         $(document).ready(async function () {
+
+            document.getElementById('roomname').innerHTML = roomId;
             me = await osql.getMe();
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
             var sql = `select * from Participation where roomid = ${roomId};`
-            var object = await osql.connect(sql);
-            var order = object.length + 1;
+            var hantei = true;
+            var objects = await osql.connect(sql);
+            for (var i = 0; i < objects.length; i++) {
+                var object = objects[i];
+                console.log(object.userid);
+                if (object.userid == me.studentid) {
+                    hantei = false
+                }
+            }
+            console.log(objects.length)
+            var order = objects.length + 1;
             sql = `insert into Participation (userid, roomid, orders) values('${me.studentid}', ${roomId},${order});`;
-            var par = await osql.connectInsert(sql);
+            if (hantei) {
+                var par = await osql.connectInsert(sql);
+            }
             console.log(par);
 
-            document.getElementById('roomname').innerHTML = roomId;
 
         });
 
