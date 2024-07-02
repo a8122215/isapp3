@@ -23,9 +23,7 @@
             var sql = `select * from Participation where roomid = ${roomId};`
             var object = await osql.connect(sql);
             var order = object.length + 1;
-            console.log(order);
-            console.log(me.studentid);
-            sql = `insert into Participation (userid, roomid, order) values(${me.studentid}, '${roomId}','${object.length + 1}', now());`;
+            sql = `insert into Participation (userid, roomid, orders) values('${me.studentid}', ${roomId},${order});`;
             var par = await osql.connectInsert(sql);
             console.log(par);
 
