@@ -41,18 +41,25 @@
 
         async function seisei() {
             var sql = `select * from Rooms where id = ${roomId};`
-            var objects = await osql.connect(sql);
-            var turn = objects.turn;
+            var objects_turn = await osql.connect(sql);
+            var turn = objects_turn[0].turn;
             sql = `select * from Participation where roomid = ${roomId};`
-            objects = await osql.connect(sql);
-            var ninzu = objects.length
+            var objects_ninzu = await osql.connect(sql);
+            var ninzu = objects_ninzu.length
             sql = `select * from Participation where id = ${roomId} AND userid = ${me.studentid};`
-            objects = await osql.connect(sql);
-            var order = objects.orders
-
+            var objects_order = await osql.connect(sql);
+            var order = objects_order[0].orders
             var html = '';
             if (turn % ninzu == order) {
-                html = html + '<input id="kaitou" type="text">< button onclick = "kaitou()" > 回答</button >'
+                html = html + '<input id="kaitou" type="text">'
+                html = html + '<button onclick = "kaitou()" > 回答</button >'
+                document.getElementById('waa').innerHTML = html;
+            } else {
+                var ima = turn % ninzu
+                var sql = `select * from Participation where id = ${roomId} AND orders = ${ima};`
+                var object_ima = await osql.connect(sql);
+                var dare = object_ima[0].userid;
+                html = `<p>${dare}</p>`
             }
         }
 
@@ -68,6 +75,7 @@
         <a href="index.html">top</a>
     </div>
     <hr>
+    <div id='waa'></div>
     <br>
     <hr>
     <div id="menber"></div>
