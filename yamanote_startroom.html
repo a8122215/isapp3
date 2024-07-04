@@ -15,6 +15,7 @@
         var roomId = osql.getParam('roomId');
         roomId = Number(roomId);
         console.log(roomId);
+        var jyoutai = true;
 
         $(document).ready(async function () {
             document.getElementById('roomname').innerHTML = roomId;
@@ -39,9 +40,19 @@
         }
 
         async function kaitou() {
-            var odai = document.getElementById('odai').value;
-            var sql = `update Rooms set topics = '${odai}' where id =  ${roomId};`;
-            var Odai = await osql.connectInsert(sql);
+            var answer = document.getElementById('kaitou').value;
+            var sql = `select * from Participation where roomid = ${roomId} and userid = ${me.studentid};`;
+            var pid = await osql.connect(sql);
+            pid = pid[0].id;
+            sql = `select * from Rooms where id = ${roomId};`;
+            var turn = await osql.connect(sql);
+            turn = turn[0].turn;
+            sql = `insert into Answers (pid, turn, content) values (${pid}, '${turn}','${answer}');`;
+            var aaaa = await osql.connectInsert(sql);
+            var next = Number(turn) + 1;
+            sql = `update Rooms set turn = ${next} where id =  ${roomId};`;
+            var bbbb = await osql.connectInsert(sql);
+            seisei();
         }
 
         async function seisei() {
@@ -57,18 +68,26 @@
             console.log(order)
 
             var html = '';
-            if (turn % ninzu == order) {
-                html = html + '<input id="kaitou" type="text">'
-                html = html + '<button onclick = "kaitou()" > 回答</button >'
-                document.getElementById('waa').innerHTML = html;
+            var han = turn % ninzu
+            if (han == 0) {
+                han = ninzu
+            }
+            if (han == order) {
+                if (jyoutai) {
+                    html = html + '<input id="kaitou" type="text">'
+                    html = html + '<button onclick = "kaitou()" > 回答</button >'
+                    document.getElementById('waa').innerHTML = html;
+                    jyoutai = false;
+                }
             } else {
-                var ima = turn % ninzu
-                var sql = `select * from Participation where roomid = ${roomId} AND orders = ${ima};`
+                var sql = `select * from Participation where roomid = ${roomId} AND orders = ${han};`
+                console.log(han);
                 var object_ima = await osql.connect(sql);
+                console.log(object_ima);
                 var dare = object_ima[0].userid;
-                html = `<p>${dare}</p>`
+                html = `<p>現在の回答者は${dare}</p>`
                 document.getElementById('waa').innerHTML = html;
-
+                jyoutai = true;
             }
         }
 
