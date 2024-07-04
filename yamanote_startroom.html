@@ -63,7 +63,7 @@
                 document.getElementById('waa').innerHTML = html;
             } else {
                 var ima = turn % ninzu
-                var sql = `select * from Participation where id = ${roomId} AND orders = ${ima};`
+                var sql = `select * from Participation where roomid = ${roomId} AND orders = ${ima};`
                 var object_ima = await osql.connect(sql);
                 var dare = object_ima[0].userid;
                 html = `<p>${dare}</p>`
