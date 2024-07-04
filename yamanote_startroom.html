@@ -16,6 +16,7 @@
         roomId = Number(roomId);
         console.log(roomId);
         var jyoutai = true;
+        var pidlist = [];
 
         $(document).ready(async function () {
             document.getElementById('roomname').innerHTML = roomId;
@@ -28,6 +29,13 @@
             var topic = object[0].topics;
             var html = `<p>お題は${topic}</p>`
             document.getElementById('eee').innerHTML = html;
+            sql = `select * from Participations where roomid = ${roomId};`
+            var pids = await osql.connect(sql);
+            for (var i = 0; i < pids.length; i++) {
+                var pid = pids[0].id;
+                pidlist.push(pid);
+            }
+
             setInterval(seisei, 1000)
         });
 
@@ -89,6 +97,13 @@
                 document.getElementById('waa').innerHTML = html;
                 jyoutai = true;
             }
+            var eeee = '';
+            eeee = eeee + 'pid = ' + pidlist[0];
+            for (var i = 1; i < pidlist.length; i++) {
+                eeee = eeee + 'or pid = ' + pidlist[0];
+
+            }
+            sql = `select * from Answer where pid = ${pidlist}`
         }
 
 
@@ -107,7 +122,7 @@
     <div id='waa'></div>
     <br>
     <hr>
-    <div id="menber"></div>
+    <div id="kotae"></div>
 </body>
 
 </html>
