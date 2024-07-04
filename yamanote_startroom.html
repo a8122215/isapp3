@@ -46,9 +46,11 @@
             sql = `select * from Participation where roomid = ${roomId};`
             var objects_ninzu = await osql.connect(sql);
             var ninzu = objects_ninzu.length
-            sql = `select * from Participation where id = ${roomId} AND userid = ${me.studentid};`
+            sql = `select * from Participation where roomid = ${roomId} and userid = ${me.studentid};`
             var objects_order = await osql.connect(sql);
             var order = objects_order[0].orders
+            console.log(order)
+
             var html = '';
             if (turn % ninzu == order) {
                 html = html + '<input id="kaitou" type="text">'
