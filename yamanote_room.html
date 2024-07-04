@@ -41,6 +41,16 @@
             console.log(par);
             sql = `select * from Participation where roomid = ${roomId};`
             objects = await osql.connect(sql);
+
+            setInterval(idou, 1000);
+            setInterval(hyou, 1000);
+        });
+
+        async function hyou() {
+            var sql = `select * from Participation where roomid = ${roomId};`
+            var hantei = true;
+            var objects = await osql.connect(sql);
+
             var html = '';
             html = html + '<table border="1">';
             for (var i = 0; i < objects.length; i++) {
@@ -55,20 +65,13 @@
                 }
                 html = html + '</tr>';
 
+
             }
             html = html + '</table>';
             document.getElementById('menber').innerHTML = html;
 
-            setInterval(idou, 1000);
-        });
-
-        async function newComment() {
-            var name = document.getElementById('comment').value;
-            var sql = `insert into Comments (roomId, userId, comment, time) values(${roomId}, '${me.id}','${name}', now());`;
-            var commentId = await osql.connectInsert(sql);
-            console.log(commentId);
-
         }
+
 
         async function touroku() {
             var odai = document.getElementById('odai').value;
@@ -76,6 +79,7 @@
             var Odai = await osql.connectInsert(sql);
             sql = `update Rooms set turn = 1 where id =  ${roomId};`;
             var Turn = await osql.connectInsert(sql);
+
         }
 
         async function idou() {
@@ -85,6 +89,7 @@
             if (object[0].turn != 0) {
                 window.location.href = `yamanote_startroom.html?roomId=${roomId}`
             }
+
         }
 
 

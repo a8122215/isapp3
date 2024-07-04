@@ -20,7 +20,6 @@
 
         $(document).ready(async function () {
             document.getElementById('roomname').innerHTML = roomId;
-            document.getElementById('roomname').innerHTML = roomId;
             me = await osql.getMe();
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
@@ -39,13 +38,6 @@
             setInterval(seisei, 1000)
         });
 
-        async function newComment() {
-            var name = document.getElementById('comment').value;
-            var sql = `insert into Comments (roomId, userId, comment, time) values(${roomId}, '${me.id}','${name}', now());`;
-            var commentId = await osql.connectInsert(sql);
-            console.log(commentId);
-
-        }
 
         async function kaitou() {
             var answer = document.getElementById('kaitou').value;
@@ -104,16 +96,16 @@
             console.log(answerList);
             var answerhtml = '';
             answerhtml = answerhtml + '<table border="1">';
-            for (var i = 0; i < objects.length; i++) {
+            for (var i = 0; i < answerList.length; i++) {
                 answerhtml = answerhtml + '<tr>';
-                var object = objects[i];
-                answerhtml = answerhtml + `<td>${object.id}</td>`;
-                answerhtml = answerhtml + `<td>Room${object.id}</td>`;
-                answerhtml = answerhtml + `<td><a href="yamanote_room.html?roomId=${object.id}">入室</a></td>`;
+                var object = answerList[i];
+                answerhtml = answerhtml + `<td>${object.turn}</td>`;
+                answerhtml = answerhtml + `<td>${object.userid}</td>`;
+                answerhtml = answerhtml + `<td>${object.content}</td>`;
                 answerhtml = answerhtml + '</tr>';
             }
             html = html + '</table>';
-            document.getElementById('rooms').innerHTML = html;
+            document.getElementById('kotae').innerHTML = answerhtml;
 
         }
 
