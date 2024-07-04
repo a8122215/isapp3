@@ -27,7 +27,7 @@
             var object = await osql.connect(sql);
             var topic = object[0].topics;
             var html = `<p>お題は${topic}</p>`
-            document.getElementById('eee').innerHTML = html;
+            document.getElementById('odaihyouzi').innerHTML = html;
             sql = `select * from Participations where roomid = ${roomId};`
             var pids = await osql.connect(sql);
             for (var i = 0; i < pids.length; i++) {
@@ -74,21 +74,22 @@
             }
             if (han == order) {
                 if (jyoutai) {
-                    html = html + '<input id="kaitou" type="text">'
-                    html = html + '<button onclick = "kaitou()" > 回答</button >'
-                    document.getElementById('waa').innerHTML = html;
+                    document.getElementById('kaitobutton').style.visibility = 'visible';
                     jyoutai = false;
                 }
             } else {
+                document.getElementById('kaitobutton').style.visibility = 'hidden';
                 var sql = `select * from Participation where roomid = ${roomId} AND orders = ${han};`
                 console.log(han);
                 var object_ima = await osql.connect(sql);
                 console.log(object_ima);
                 var dare = object_ima[0].userid;
                 html = `<p>現在の回答者は${dare}</p>`
-                document.getElementById('waa').innerHTML = html;
+                document.getElementById('kaitousya').innerHTML = html;
                 jyoutai = true;
             }
+
+            //答えログ表
             sql = `select userid,turn,content,roomid from Participation
                     inner join Answers on Participation.id = Answers.pid
                     where roomid = ${roomId} ;`;
@@ -121,8 +122,12 @@
         <a href="index.html">top</a>
     </div>
     <hr>
-    <div id='eee'></div>
-    <div id='waa'></div>
+    <div id='odaihyouzi'></div>
+    <div id='kaitobutton'>
+        <input id="kaitou" type="text">
+        <button onclick="kaitou()"> 回答</button>
+    </div>
+    <div id='kaitousya'></div>
     <br>
     <hr>
     <div id="kotae"></div>
