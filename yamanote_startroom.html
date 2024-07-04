@@ -22,6 +22,11 @@
             me = await osql.getMe();
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
+            var sql = `select topics from Rooms where id = ${roomId};`
+            var object = await osql.connect(sql);
+            var topic = object[0].topics;
+            var html = `<p>お題は${topic}</p>`
+            document.getElementById('eee').innerHTML = html;
             setInterval(seisei, 1000)
         });
 
@@ -77,6 +82,7 @@
         <a href="index.html">top</a>
     </div>
     <hr>
+    <div id='eee'></div>
     <div id='waa'></div>
     <br>
     <hr>
