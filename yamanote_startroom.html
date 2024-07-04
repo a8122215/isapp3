@@ -97,13 +97,24 @@
                 document.getElementById('waa').innerHTML = html;
                 jyoutai = true;
             }
-            var eeee = '';
-            eeee = eeee + 'pid = ' + pidlist[0];
-            for (var i = 1; i < pidlist.length; i++) {
-                eeee = eeee + 'or pid = ' + pidlist[0];
-
+            sql = `select userid,turn,content,roomid from Participation
+                    inner join Answers on Participation.id = Answers.pid
+                    where roomid = ${roomId} ;`;
+            var answerList = await osql.connect(sql);
+            console.log(answerList);
+            var answerhtml = '';
+            answerhtml = answerhtml + '<table border="1">';
+            for (var i = 0; i < objects.length; i++) {
+                answerhtml = answerhtml + '<tr>';
+                var object = objects[i];
+                answerhtml = answerhtml + `<td>${object.id}</td>`;
+                answerhtml = answerhtml + `<td>Room${object.id}</td>`;
+                answerhtml = answerhtml + `<td><a href="yamanote_room.html?roomId=${object.id}">入室</a></td>`;
+                answerhtml = answerhtml + '</tr>';
             }
-            sql = `select * from Answer where pid = ${pidlist}`
+            html = html + '</table>';
+            document.getElementById('rooms').innerHTML = html;
+
         }
 
 
