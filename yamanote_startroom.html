@@ -67,6 +67,8 @@
                 var object_ima = await osql.connect(sql);
                 var dare = object_ima[0].userid;
                 html = `<p>${dare}</p>`
+                document.getElementById('waa').innerHTML = html;
+
             }
         }
 
