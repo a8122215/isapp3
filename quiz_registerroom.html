@@ -24,9 +24,6 @@
 
             var room = objects[0];
             document.getElementById('roomname').innerHTML = room.name;
-
-            await refreshComments();
-            setInterval(refreshComments, 2000);
         });
 
 
@@ -42,8 +39,18 @@
     </div>
     <hr>
     <div>
-        <input id="comment" type="text">
-        <button onclick="newComment()">new comment</button>
+        問題文　：<input id="quiz" type="text"><br>
+        選択肢１：<input id="choise1" type="text"><br>
+        選択肢２：<input id="choise2" type="text"><br>
+        選択肢３：<input id="choise3" type="text"><br>
+        正解の選択肢
+        <select>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
+        <br>
+        <button onclick="newComment()">登録</button>
     </div>
     <br>
     <div id="comments"></div>
