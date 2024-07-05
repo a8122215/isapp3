@@ -15,8 +15,12 @@
             var me = await osql.getMe();
             console.log(me);
             var name = me.lname + me.fname;
-            var sql = `insert ignore into Users (StudentID, Name) values('${me.studentid}', '${name}');`;
-            await osql.connectInsert(sql);
+            var sql2 = `select * from Users where StudentID = '${me.studentid}';`;
+            var objects = await osql.connect(sql2);
+            if (objects.length == 0) {
+                var sql = `insert ignore into Users (StudentID, Name) values('${me.studentid}', '${name}');`;
+                await osql.connectInsert(sql);
+            }
 
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
