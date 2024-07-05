@@ -12,18 +12,21 @@
         osql.requireLogin();
 
         var me;
-        var roomId = osql.getParam('roomId');
+        var roomID = osql.getParam('roomId');
 
         $(document).ready(async function () {
             me = await osql.getMe();
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
 
-            var sql = `select * from Rooms where id = ${roomId};`;
-            var objects = await osql.connect(sql);
-
-            var room = objects[0];
-            document.getElementById('roomname').innerHTML = room.name;
+            var sql_odai = `select * from Rooms where ID = ${roomID}`
+            var object = await osql.connect(sql_odai);
+            odai = object[0].Name;
+            if (odai == '') {
+                document.getElementById('roomname').innerHTML = room + `${object[0].ID}`;
+            } else {
+                document.getElementById('roomname').innerHTML = odai;
+            }
         });
 
 
@@ -32,17 +35,17 @@
 </head>
 
 <body>
-    <h1>quizroom <span id="roomname"></span></h1>
+    <h1><span id="roomname"></span></h1>
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="index.html">top</a>
     </div>
     <hr>
     <div>
-        問題文　：<input id="quiz" type="text"><br>
-        選択肢１：<input id="choise1" type="text"><br>
-        選択肢２：<input id="choise2" type="text"><br>
-        選択肢３：<input id="choise3" type="text"><br>
+        問題文　：<input id="quiz" type="text" style="width: 400px;"><br>
+        選択肢１：<input id="choise1" type="text" style="width: 400px;"><br>
+        選択肢２：<input id="choise2" type="text" style="width: 400px;"><br>
+        選択肢３：<input id="choise3" type="text" style="width: 400px;"><br>
         正解の選択肢
         <select>
             <option>1</option>
