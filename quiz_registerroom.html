@@ -23,11 +23,24 @@
             var object = await osql.connect(sql_odai);
             odai = object[0].Name;
             if (odai == '') {
-                document.getElementById('roomname').innerHTML = room + `${object[0].ID}`;
+                document.getElementById('roomname').innerHTML = 'room' + `${object[0].ID}`;
             } else {
                 document.getElementById('roomname').innerHTML = odai;
             }
         });
+
+        async function register() {
+            var quiz = document.getElementById('quiz').value;
+            var choise1 = document.getElementById('choise1').value;
+            var choise2 = document.getElementById('choise2').value;
+            var choise3 = document.getElementById('choise3').value;
+            var answer = document.getElementById('answer').value;
+            if (quiz != '' && choise1 != '' && choise2 != '' && choise3 != '') {
+                console.log('ok');
+            } else {
+                console.log('ng');
+            }
+        }
 
 
     </script>
@@ -47,13 +60,13 @@
         選択肢２：<input id="choise2" type="text" style="width: 400px;"><br>
         選択肢３：<input id="choise3" type="text" style="width: 400px;"><br>
         正解の選択肢
-        <select>
+        <select id="answer">
             <option>1</option>
             <option>2</option>
             <option>3</option>
         </select>
         <br>
-        <button onclick="newComment()">登録</button>
+        <button onclick="register()">登録</button>
     </div>
     <br>
     <div id="comments"></div>
