@@ -12,21 +12,21 @@
         osql.requireLogin();
 
         var me;
-        var roomId = osql.getParam('roomId');
+        var roomID = osql.getParam('roomId');
 
         $(document).ready(async function () {
             me = await osql.getMe();
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
 
-            var sql = `select * from Rooms where id = ${roomId};`;
-            var objects = await osql.connect(sql);
-
-            var room = objects[0];
-            document.getElementById('roomname').innerHTML = room.name;
-
-            // await refreshComments();
-            // setInterval(refreshComments, 2000);
+            var sql_odai = `select * from Rooms where ID = ${roomID}`
+            var object = await osql.connect(sql_odai);
+            odai = object[0].Name;
+            if (odai == '') {
+                document.getElementById('roomname').innerHTML = 'room' + `${object[0].ID}`;
+            } else {
+                document.getElementById('roomname').innerHTML = odai;
+            }
         });
 
 
@@ -35,7 +35,7 @@
 </head>
 
 <body>
-    <h1>quizroom <span id="roomname"></span></h1>
+    <h1><span id="roomname"></span></h1>
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="quiz_index.html">top</a>
