@@ -27,6 +27,20 @@
             } else {
                 document.getElementById('roomname').innerHTML = odai;
             }
+            var state = object[0].State;
+            if (state == 0) {
+                document.getElementById('register_box').style.visibility = 'visible';
+                document.getElementById('progress').style.visibility = 'hidden';
+                document.getElementById('result').style.visibility = 'hidden';
+            } else if (state == 1) {
+                document.getElementById('register_box').style.visibility = 'hidden';
+                document.getElementById('progress').style.visibility = 'visible';
+                document.getElementById('result').style.visibility = 'hidden';
+            } else {
+                document.getElementById('register_box').style.visibility = 'hidden';
+                document.getElementById('progress').style.visibility = 'hidden';
+                document.getElementById('result').style.visibility = 'visible';
+            }
         });
         async function register() {
             var result = judge();
@@ -81,7 +95,7 @@
         <a href="quiz_index.html">top</a>
     </div>
     <hr>
-    <div>
+    <div id="register_box">
         問題文　：<input id="quiz" type="text" style="width: 400px;"><br>
         選択肢１：<input id="choise1" type="text" style="width: 400px;"><br>
         選択肢２：<input id="choise2" type="text" style="width: 400px;"><br>
@@ -94,6 +108,12 @@
         </select>
         <br>
         <button onclick="register()">登録</button>
+    </div>
+    <div id="progress">
+        進行中のため参加できません
+    </div>
+    <div id="result">
+        結果
     </div>
     <br>
     <div id="comments"></div>
