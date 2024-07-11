@@ -93,13 +93,10 @@
         }
 
         async function end() {
-<<<<<<< HEAD
             var sql_quiz2 = `select * from (Questions inner join Classes on Questions.ID = Classes.QuestionID) inner join QuizLevel on Classes.QuestionID = QuizLevel.QuestionID where RoomID = ${roomID};`;
             var quizList2 = await osql.connect(sql_quiz2);
             console.log(quizList2);
-=======
             localStorage.setItem('Quiz', JSON.stringify(0));
->>>>>>> be46f4c43076536d3e75fd6d7650254ebbad8b7f
             console.log(correct_miss);
             var parcent;
             for (var i = 0; i < correct_miss.length; i++) {
