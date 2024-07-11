@@ -32,7 +32,7 @@
             var sql_participation = `select * from Participation where RoomID = ${roomID}`
             var objects_participation = await osql.connect(sql_participation);
             console.log(objects_participation);
-            var owner = objects_participation[0].UserID;
+            var owner = objects_participation[0];
             console.log(owner);
             if (owner == me.studentid) {
                 document.getElementById('close').style.visibility = 'visible';
