@@ -28,14 +28,22 @@
                 document.getElementById('roomname').innerHTML = odai;
             }
         });
-
         async function register() {
             var result = judge();
             console.log(result);
             console.log(result.length);
             if (result.length == 5) {
-                console.log('ok');
-                console.log(result);
+                var sql_question = `insert into Questions (Quiz,Choise1,Choise2,Choise3,Answer,UserID)
+                    values ('${result[0]}','${result[1]}','${result[2]}','${result[3]}',${result[4]},${me.studentid});`;
+
+                var object_question = await osql.connectInsert(sql_question);
+                console.log('questionID : ' + object_question);
+
+                var sql_room_question = `insert into Classes (RoomID,QuestionID)
+                    values (${roomID},${Number(object_question)});`;
+
+                var object_class = await osql.connectInsert(sql_room_question);
+                console.log('classID : ' + object_class);
             } else {
                 console.log('ng');
                 alert('問題を入力してください');
@@ -70,7 +78,7 @@
     <h1><span id="roomname"></span></h1>
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
-        <a href="index.html">top</a>
+        <a href="quiz_index.html">top</a>
     </div>
     <hr>
     <div>
