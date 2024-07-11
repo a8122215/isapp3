@@ -83,7 +83,17 @@
         }
 
         async function end() {
-
+            console.log(correct_miss);
+            var parcent;
+            for (var i = 0; i < correct_miss.length; i++) {
+                if (correct_miss[i]) {
+                    parcent = + 1;
+                }
+            }
+            console.log(parcent);
+            var sql_parsent = `update Participation set Score = ${parcent} where RoomID = ${roomID} AND UserID = ${me.studentid};`;
+            await osql.connect(sql_parsent);
+            window.location.href = `quiz_resultroom.html?roomId=${roomID}`
         }
 
 
