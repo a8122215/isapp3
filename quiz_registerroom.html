@@ -31,95 +31,59 @@
             } else {
                 document.getElementById('roomname').innerHTML = odai;
             }
-            var state = object[0].State;
-            if (state == 2 && check != 0) {
-                window.location.href = `quiz_waitroom.html?roomId=${roomID}`
-            }
-            if (state == 0) {
-                progress_judge();
-                document.getElementById('register_box').style.visibility = 'visible';
-                document.getElementById('progress').style.visibility = 'hidden';
-                document.getElementById('result').style.visibility = 'hidden';
-            } else if (state == 1) {
-                document.getElementById('register_box').style.visibility = 'hidden';
-                document.getElementById('progress').style.visibility = 'visible';
-                document.getElementById('result').style.visibility = 'hidden';
-                progress_judge();
-            } else {
-                document.getElementById('register_box').style.visibility = 'hidden';
-                document.getElementById('progress').style.visibility = 'hidden';
-                document.getElementById('result').style.visibility = 'visible';
-            }
             Participation_register();
+            state_check();
+            setInterval(state_check, 1000);
         });
 
         async function Participation_register() {
-            var sql_state = `select * from Rooms where ID = ${roomID}`
-            var object = await osql.connect(sql_state);
-            var State = object[0].State;
             var sql_participation = `select * from Participation where UserID = ${me.studentid} AND RoomID = ${roomID};`;
             var object_participation = await osql.connect(sql_participation);
             if (object_participation.length == 0 && State == 0) {
                 var sql_participation_register = `insert into Participation (UserID,RoomID) values (${me.studentid}, ${roomID});`;
-                var object_participation_register = await osql.connectInsert(sql_participation_register);
-            }
-        }
-
-        async function progress_judge() {
-            var sql_participation = `select * from Participation where UserID = ${me.studentid} AND RoomID = ${roomID};`;
-            var object_participation = await osql.connect(sql_participation);
-            console.log(object_participation);
-            var sql_judge = `select * from Participation inner join Classes on Participation.RoomID = Classes.RoomID
-                where UserID = ${me.studentid} AND Participation.RoomID = ${roomID};`
-            var object_judge = await osql.connect(sql_judge);
-            if (object_judge.length != 0) {
-                window.location.href = `quiz_waitroom.html?roomId=${roomID}`
-            }
-            if (object_participation.length != 0) {
-                document.getElementById('register_box').style.visibility = 'visible';
-                document.getElementById('progress').style.visibility = 'hidden';
-                document.getElementById('result').style.visibility = 'hidden';
+                object_participation_register = await osql.connectInsert(sql_participation_register);
             }
         }
 
         async function register() {
-            var result = judge();
-            console.log(result);
-            console.log(result.length);
-            if (result.length == 5) {
-                var sql_question = `insert into Questions (Quiz,Choise1,Choise2,Choise3,Answer,UserID)
-                    values ('${result[0]}','${result[1]}','${result[2]}','${result[3]}',${result[4]},${me.studentid});`;
-
-                var object_question = await osql.connectInsert(sql_question);
-
-                var sql_room_question = `insert into Classes (RoomID,QuestionID)
-                    values (${roomID},${Number(object_question)});`;
-                var object_class = await osql.connectInsert(sql_room_question);
-                var register_quizlevel = `insert into QuizLevel (QuestionID, TryCount, AnswerCount) values ('${Number(object_question)}', 0, 0);`;
-                var object_quizlevel = await osql.connectInsert(register_quizlevel);
-                window.location.href = `quiz_waitroom.html?roomId=${roomID}`
+            var sql_state = `select * from Rooms where ID = ${roomID};`;
+            var object_state = await osql.connect(sql_state);
+            var state = object_state[0].State;
+            if (state > 1) {
+                document.getElementById('register_box').style.visibility = 'hidden';
+                document.getElementById('progress').style.visibility = 'visible';
             } else {
-                console.log('ng');
-                alert('問題を入力してください');
+                var result = [];
+                var quiz = document.getElementById('quiz').value;
+                var choise1 = document.getElementById('choise1').value;
+                var choise2 = document.getElementById('choise2').value;
+                var choise3 = document.getElementById('choise3').value;
+                var answer = document.getElementById('answer').value;
+                if (quiz != '' && choise1 != '' && choise2 != '' && choise3 != '') {
+                    var sql_question = `insert into Questions (Quiz,Choise1,Choise2,Choise3,Answer,UserID)
+                    values ('${quiz}','${choise1}','${choise2}','${choise3}',${answer},${me.studentid});`;
+                    var object_question = await osql.connectInsert(sql_question);
+
+                    var sql_room_question = `insert into Classes (RoomID,QuestionID)
+                    values (${roomID},${Number(object_question)});`;
+                    var object_class = await osql.connectInsert(sql_room_question);
+                    var register_quizlevel = `insert into QuizLevel (QuestionID, TryCount, AnswerCount) values ('${Number(object_question)}', 0, 0);`;
+                    var object_quizlevel = await osql.connectInsert(register_quizlevel);
+                    window.location.href = `quiz_waitroom.html?roomId=${roomID}`
+                } else {
+                    console.log('ng');
+                    alert('問題を入力してください');
+                }
             }
         }
 
-        function judge() {
-            var result = [];
-            var quiz = document.getElementById('quiz').value;
-            var choise1 = document.getElementById('choise1').value;
-            var choise2 = document.getElementById('choise2').value;
-            var choise3 = document.getElementById('choise3').value;
-            var answer = document.getElementById('answer').value;
-            if (quiz != '' && choise1 != '' && choise2 != '' && choise3 != '') {
-                result.push(quiz);
-                result.push(choise1);
-                result.push(choise2);
-                result.push(choise3);
-                result.push(answer);
-                return result;
-            } else {
-                return result;
+        async function state_check() {
+            var sql_state = `select * from Rooms where ID = ${roomID};`;
+            var object_state = await osql.connect(sql_state);
+            var state = object_state[0].State;
+            if (state > 1) {
+                document.getElementById('register_box').style.visibility = 'hidden';
+                document.getElementById('progress').style.visibility = 'visible';
             }
         }
 
@@ -135,7 +99,13 @@
         <a href="quiz_index.html">top</a>
     </div>
     <hr>
-    <div id="register_box" style="visibility: hidden">
+    <div id="progress" style="visibility: hidden">
+        <p>
+            参加は締め切られました。
+        </p>
+        <a href="quiz_robby.html">ロビーに戻る</a>
+    </div>
+    <div id="register_box">
         問題文　：<input id="quiz" type="text" style="width: 400px;"><br>
         選択肢１：<input id="choise1" type="text" style="width: 400px;"><br>
         選択肢２：<input id="choise2" type="text" style="width: 400px;"><br>
@@ -149,14 +119,6 @@
         <br>
         <button onclick="register()">登録</button>
     </div>
-    <div id="progress" style="visibility: hidden">
-        参加は締め切られました。
-    </div>
-    <div id="result" style="visibility: hidden">
-        結果
-    </div>
-    <br>
-    <div id="comments"></div>
 </body>
 
 </html>

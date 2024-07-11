@@ -66,19 +66,36 @@
         }
 
         async function memberList() {
-            check = 0;
             var sql_participation = `select * from Participation where RoomID = ${roomID} order by Score desc`
             var objects_participation = await osql.connect(sql_participation);
+            var score = [];
+            var order = [];
+            for (var i = 0; i < objects_participation.length; i++) {
+                var object = objects_participation[i].Score;
+                if (object != null) {
+                    score.push(objects_participation[i].Score);
+                }
+            }
+            if (objects_participation[0].Score != null) {
+                order.push(1);
+            }
+            for (var i = 0; i < score.length; i++) {
+                if (score[i] == score[i + 1]) {
+                    order.push(order[i]);
+                } else {
+                    order.push(i + 1);
+                }
+            }
 
             var html = '';
             html = html + '<table border="1">';
             html = html + '<tr><td>順位</td><td>参加者</td><td>正答数</td></tr>'
-            for (var i = 0; i < objects_participation.length; i++) {
+            for (var i = 0; i < order.length; i++) {
                 var object_participation = objects_participation[i];
                 html = html + '<tr>';
-                html = html + `<td>${i + 1}</td>`;
+                html = html + `<td>${order[i]}</td>`;
                 html = html + `<td>${object_participation.UserID}</td>`;
-                html = html + `<td>${object_participation.Score}</td>`;
+                html = html + `<td>${score[i]}</td>`;
                 html = html + '</tr>';
             }
             html = html + '</table>';
@@ -96,9 +113,11 @@
 </head>
 
 <body>
-    <h1><span id="roomname"></span>の結果</h1>
+    <h1><span id="roomname"></span></h1>
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+        <br>
+        <a href="quiz_robby.html">robby</a>　
         <a href="quiz_index.html">top</a>
     </div>
     <hr>
