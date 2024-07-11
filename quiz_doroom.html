@@ -83,6 +83,9 @@
         }
 
         async function end() {
+            var sql_quiz2 = `select * from (Questions inner join Classes on Questions.ID = Classes.QuestionID) inner join QuizLevel on Classes.QuestionID = QuizLevel.QuestionID where RoomID = ${roomID};`;
+            var quizList2 = await osql.connect(sql_quiz2);
+            console.log(quizList2);
             console.log(correct_miss);
             var parcent;
             for (var i = 0; i < correct_miss.length; i++) {
