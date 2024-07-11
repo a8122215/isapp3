@@ -22,13 +22,17 @@
             var sql_odai = `select * from Rooms where ID = ${roomID}`
             var object = await osql.connect(sql_odai);
             odai = object[0].Name;
+
+            var sql_participation = `select * from Participation where UserID = ${me.studentid} AND RoomID = ${roomID};`;
+            var object_participation = await osql.connect(sql_participation);
+            check = object_participation.length;
             if (odai == '') {
                 document.getElementById('roomname').innerHTML = 'room' + `${object[0].ID}`;
             } else {
                 document.getElementById('roomname').innerHTML = odai;
             }
             var state = object[0].State;
-            if (state == 2) {
+            if (state == 2 && check != 0) {
                 window.location.href = `quiz_waitroom.html?roomId=${roomID}`
             }
             if (state == 0) {

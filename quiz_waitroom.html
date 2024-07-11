@@ -59,8 +59,10 @@
             } else {
                 result = window.confirm('問題をまだ登録していない人がいますが、ゲームを開始してもよろしいですか？')
             }
-            var sql = `update Rooms set State = 2 where ID = ${roomID}`
-            var object = await osql.connect(sql);
+            if (result) {
+                var sql = `update Rooms set State = 2 where ID = ${roomID}`
+                var object = await osql.connect(sql);
+            }
         }
 
         async function memberList() {
