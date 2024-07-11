@@ -50,6 +50,7 @@
         }
 
         function Quiz() {
+            console.log(nowQuiz);
             document.getElementById('answer_button').style.visibility = 'visible';
             document.getElementById('next').style.visibility = 'hidden';
             answer = document.getElementById('kotae').innerHTML = '';
@@ -101,10 +102,12 @@
             for (var i = 0; i < correct_miss.length; i++) {
                 if (correct_miss[i]) {
                     parcent = + 1;
-                    var sql_answer = `update QuizLevel set AnswerCount = AnswerCount + 1 where QuestionID = ${quizList2[i].QuestionID};`;
+                    var Acount = quizList2[i].AnswerCount + 1;
+                    var sql_answer = `update QuizLevel set AnswerCount = '${Acount}' where QuestionID = ${quizList2[i].QuestionID};`;
+                    await osql.connect(sql_answer);
                 }
-                var sql_try = `update QuizLevel set TryCount = TryCount + 1 where QuestionID = ${quizList2[i].QuestionID};`;
-                await osql.connect(sql_answer);
+                var Tcount = quizList2[i].TryCount + 1;
+                var sql_try = `update QuizLevel set TryCount = '${Tcount}' where QuestionID = ${quizList2[i].QuestionID};`;
                 await osql.connect(sql_try);
             }
             console.log(parcent);
