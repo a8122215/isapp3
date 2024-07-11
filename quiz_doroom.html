@@ -15,6 +15,7 @@
         var roomID = osql.getParam('roomId');
         var nowQuiz = 0;
         var quizList;
+        var correct_miss = [];
 
         $(document).ready(async function () {
             me = await osql.getMe();
@@ -30,27 +31,49 @@
                 document.getElementById('roomname').innerHTML = odai;
             }
             makeQuiz();
-            Quiz();
         });
 
         async function makeQuiz() {
             var sql_quiz = `select * from Questions inner join Classes on Questions.ID = Classes.QuestionID where RoomID = ${roomID};`;
             quizList = await osql.connect(sql_quiz);
             console.log(quizList);
+            Quiz();
         }
 
         function Quiz() {
+            document.getElementById('answer_button').style.visibility = 'visible';
+            document.getElementById('next').style.visibility = 'hidden';
             var quiz = quizList[nowQuiz];
             var sentence = quiz.Quiz;
             var choise1 = quiz.Choise1;
-            var choise1 = quiz.Choise2;
-            var choise1 = quiz.Choise3;
+            var choise2 = quiz.Choise2;
+            var choise3 = quiz.Choise3;
             var answer = quiz.Answer;
-            document.getElementById('Quiz').innerHTML = odai;
-            document.getElementById('Choise1').innerHTML = odai;
-            document.getElementById('Choise2').innerHTML = odai;
-            document.getElementById('Choise3').innerHTML = odai;
-            document.getElementById('result').innerHTML = odai;
+            document.getElementById('Quiz').innerHTML = sentence;
+            document.getElementById('Choise1').innerHTML = choise1;
+            document.getElementById('Choise2').innerHTML = choise2;
+            document.getElementById('Choise3').innerHTML = choise3;
+            document.getElementById('result').innerHTML = '正解の選択肢 : ' + answer;
+        }
+
+        function answer() {
+            var quiz = quizList[nowQuiz];
+            var answer_choise = quiz.Answer;
+            var answer = document.getElementById('answer').value;
+            if (answer == answer_choise) {
+                correct_miss.push(true);
+                answer = document.getElementById('kotae').innerHTML = '正解';
+            } else {
+                correct_miss.push(false);
+                answer = document.getElementById('kotae').innerHTML = '不正解';
+            }
+            document.getElementById('answer_button').style.visibility = 'hidden';
+            document.getElementById('next').style.visibility = 'visible';
+        }
+
+        function next() {
+            nowQuiz += 1;
+            Quiz();
         }
 
 
@@ -77,7 +100,8 @@
             <option>3</option>
         </select>
         <br>
-        <button onclick="answer()"></button>
+        <button onclick="answer()" id="answer_button">回答</button>
+        <p id="kotae"></p>
         <div style="visibility: hidden" id="result"></div>
         <hr>
         <button onclick="next()" style="visibility: hidden" id="next">次の問題へ</button>
