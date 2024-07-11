@@ -30,6 +30,10 @@
             } else {
                 document.getElementById('roomname').innerHTML = odai;
             }
+            var loaded = localStorage.getItem('Quiz');
+            loaded = JSON.parse(loaded);
+            console.log(loaded);
+            nowQuiz = loaded;
             makeQuiz();
         });
 
@@ -37,7 +41,12 @@
             var sql_quiz = `select * from Questions inner join Classes on Questions.ID = Classes.QuestionID where RoomID = ${roomID};`;
             quizList = await osql.connect(sql_quiz);
             console.log(quizList);
-            Quiz();
+            if (nowQuiz == quizList.length - 1) {
+                document.getElementById('answer_button').style.visibility = 'hidden';
+                document.getElementById('end').style.visibility = 'visible';
+            } else {
+                Quiz();
+            }
         }
 
         function Quiz() {
@@ -75,10 +84,11 @@
                 document.getElementById('answer_button').style.visibility = 'hidden';
                 document.getElementById('next').style.visibility = 'visible';
             }
+            nowQuiz += 1;
+            localStorage.setItem('Quiz', JSON.stringify(nowQuiz));
         }
 
         function next() {
-            nowQuiz += 1;
             Quiz();
         }
 
@@ -96,7 +106,12 @@
             window.location.href = `quiz_resultroom.html?roomId=${roomID}`
         }
 
-
+        function loadButtonPressed() {
+            var loaded = localStorage.getItem('eiwa');
+            loaded = JSON.parse(loaded);
+            console.log(loaded);
+            fruits = loaded;
+        }
     </script>
 
 </head>
