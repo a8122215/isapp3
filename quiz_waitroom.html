@@ -13,6 +13,7 @@
 
         var me;
         var roomID = osql.getParam('roomId');
+        var check = 0;
 
         $(document).ready(async function () {
             me = await osql.getMe();
@@ -37,7 +38,7 @@
                 document.getElementById('close').style.visibility = 'visible';
                 document.getElementById('start').style.visibility = 'visible';
                 if (object[0].State == 1) {
-                    document.getElementById('start').style.visibility = 'hidden';
+                    document.getElementById('close').style.visibility = 'hidden';
                 }
             }
             menberList();
@@ -45,11 +46,24 @@
         });
 
         async function entryClose() {
-            var sql = `update Rooms set State = 1 where RoomID = ${roomID}`
-            document.getElementById('start').style.visibility = 'hidden';
+            var sql = `update Rooms set State = 1 where ID = ${roomID}`
+            var object = await osql.connect(sql);
+            document.getElementById('close').style.visibility = 'hidden';
+        }
+
+        async function start() {
+            var result;
+            if (check == 0) {
+                result = window.confirm('ゲームを開始してもよろしいですか？');
+            } else {
+                result = window.confirm('問題をまだ登録していない人がいますが、ゲームを開始してもよろしいですか？')
+            }
+            var sql = `update Rooms set State = 2 where ID = ${roomID}`
+            var object = await osql.connect(sql);
         }
 
         async function menberList() {
+            check = 0;
             var sql_participation = `select * from Participation where RoomID = ${roomID}`
             var objects_participation = await osql.connect(sql_participation);
 
@@ -74,13 +88,15 @@
                     html = html + `<td>登録済み</td>`;
                 } else {
                     html = html + `<td>未登録</td>`;
+                    check += 1;
                 }
                 html = html + '</tr>';
             }
             html = html + '</table>';
             document.getElementById('memberList').innerHTML = html;
-
         }
+
+
 
 
     </script>
