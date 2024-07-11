@@ -37,6 +37,13 @@
             console.log(objects);
             var html = '';
             html = html + '<table border="1">';
+            var sql_participation = `select * from Participation where UserID = ${me.studentid};`;
+            var objects_participation = await osql.connect(sql_participation);
+            var inRoom = [];
+            for (var i = 0; i < objects_participation.length; i++) {
+                var object_participation = objects_participation[i];
+                inRoom.push(object_participation.RoomID);
+            }
             for (var i = 0; i < objects.length; i++) {
                 html = html + '<tr>';
                 var object = objects[i];
@@ -46,12 +53,14 @@
                 } else {
                     html = html + `<td>${object.Name}</td>`;
                 }
-                if (object.State == 0) {
+                if (inRoom.includes(object.ID)) {
+                    html = html + '<td>参加中</td>'
+                } else if (object.State == 0) {
                     html = html + `<td>開始前</td>`;
                 } else if (object.State == 1) {
-                    html = html + '<td>参加締切</td>'
+                    html = html + '<td>参加締切</td>';
                 } else {
-                    html = html + '<td>終了</td>'
+                    html = html + '<td>終了</td>';
                 }
                 html = html + `<td><a href="quiz_registerroom.html?roomId=${object.ID}">入室</a></td>`;
                 html = html + '</tr>';
@@ -59,6 +68,7 @@
             html = html + '</table>';
             document.getElementById('rooms').innerHTML = html;
         }
+
 
     </script>
 
