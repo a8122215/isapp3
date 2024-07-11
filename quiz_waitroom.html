@@ -27,7 +27,60 @@
             } else {
                 document.getElementById('roomname').innerHTML = odai;
             }
+
+            var sql_participation = `select * from Participation where RoomID = ${roomID}`
+            var objects_participation = await osql.connect(sql_participation);
+            console.log(objects_participation);
+            var owner = objects_participation[0].UserID;
+            console.log(owner);
+            if (owner == me.studentid) {
+                document.getElementById('close').style.visibility = 'visible';
+                document.getElementById('start').style.visibility = 'visible';
+                if (object[0].State == 1) {
+                    document.getElementById('start').style.visibility = 'hidden';
+                }
+            }
+            menberList();
+            setInterval(menberList, 1000);
         });
+
+        async function entryClose() {
+            var sql = `update Rooms set State = 1 where RoomID = ${roomID}`
+            document.getElementById('start').style.visibility = 'hidden';
+        }
+
+        async function menberList() {
+            var sql_participation = `select * from Participation where RoomID = ${roomID}`
+            var objects_participation = await osql.connect(sql_participation);
+
+            var sql_classes = `select * from Classes innner join Questions on QuestionID = Questions.ID where RoomID = ${roomID}`
+            var objects_classes = await osql.connect(sql_classes);
+            console.log(objects_classes)
+
+            var questionList = []
+            for (var i = 0; i < objects_classes.length; i++) {
+                object_classes = objects_classes[i];
+                questionList.push(object_classes.UserID);
+            }
+            console.log(questionList);
+            var html = '';
+            html = html + '<table border="1">';
+            html = html + '<tr><td>参加者</td><td>問題登録</td></tr>'
+            for (var i = 0; i < objects_participation.length; i++) {
+                var object_participation = objects_participation[i];
+                html = html + '<tr>';
+                html = html + `<td>${object_participation.UserID}</td>`;
+                if (questionList.includes(object_participation.UserID)) {
+                    html = html + `<td>登録済み</td>`;
+                } else {
+                    html = html + `<td>未登録</td>`;
+                }
+                html = html + '</tr>';
+            }
+            html = html + '</table>';
+            document.getElementById('memberList').innerHTML = html;
+
+        }
 
 
     </script>
@@ -42,9 +95,11 @@
     </div>
     <hr>
     <div>
-        <input id="comment" type="text">
-        <button onclick="newComment()">new comment</button>
+        <button onclick="entryClose()" style="visibility: hidden" id="close">参加締切</button>
+        <br>
+        <button onclick="start()" style="visibility: hidden" id="start">開始</button>
     </div>
+    <div id="memberList"></div>
     <br>
     <div id="comments"></div>
 </body>
