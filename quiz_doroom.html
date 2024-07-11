@@ -43,6 +43,7 @@
         function Quiz() {
             document.getElementById('answer_button').style.visibility = 'visible';
             document.getElementById('next').style.visibility = 'hidden';
+            answer = document.getElementById('kotae').innerHTML = '';
             var quiz = quizList[nowQuiz];
             var sentence = quiz.Quiz;
             var choise1 = quiz.Choise1;
@@ -67,13 +68,22 @@
                 correct_miss.push(false);
                 answer = document.getElementById('kotae').innerHTML = '不正解';
             }
-            document.getElementById('answer_button').style.visibility = 'hidden';
-            document.getElementById('next').style.visibility = 'visible';
+            if (nowQuiz == quizList.length - 1) {
+                document.getElementById('answer_button').style.visibility = 'hidden';
+                document.getElementById('end').style.visibility = 'visible';
+            } else {
+                document.getElementById('answer_button').style.visibility = 'hidden';
+                document.getElementById('next').style.visibility = 'visible';
+            }
         }
 
         function next() {
             nowQuiz += 1;
             Quiz();
+        }
+
+        async function end() {
+
         }
 
 
@@ -89,10 +99,10 @@
     </div>
     <hr>
     <div>
-        <p id="Quiz">問題文</p>
-        <p id="Choise1">選択肢１</p>
-        <p id="Choise2">選択肢２</p>
-        <p id="Choise3">選択肢３</p>
+        <p>問題文　：　<span id="Quiz"></span></p>
+        <p>選択肢１：　<span id="Choise1"></span></p>
+        <p>選択肢２：　<span id="Choise2"></span></p>
+        <p>選択肢３：　<span id="Choise3"></span></p>
         正解の選択肢
         <select id="answer">
             <option>1</option>
@@ -105,6 +115,7 @@
         <div style="visibility: hidden" id="result"></div>
         <hr>
         <button onclick="next()" style="visibility: hidden" id="next">次の問題へ</button>
+        <button onclick="end()" style="visibility: hidden" id="end">結果を見る</button>
     </div>
     <br>
     <div id="comments"></div>
