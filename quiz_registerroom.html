@@ -18,6 +18,7 @@
             me = await osql.getMe();
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
+
             var sql_odai = `select * from Rooms where ID = ${roomID}`
             var object = await osql.connect(sql_odai);
             odai = object[0].Name;
