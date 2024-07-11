@@ -13,8 +13,6 @@
 
         var me;
         var roomID = osql.getParam('roomId');
-        var nowQuiz = 0;
-        var quizList;
 
         $(document).ready(async function () {
             me = await osql.getMe();
@@ -29,42 +27,23 @@
             } else {
                 document.getElementById('roomname').innerHTML = odai;
             }
+            memberList();
         });
 
-        async function makeQuiz() {
-            var sql_quiz = `select * from Questions inner join Classes on Questions.ID = Classes.QuestionID where RoomID = ${roomID};`;
-            quizList = await osql.connect(sql_quiz);
-            console.log(quizList);
-        }
-
-        async function menberList() {
+        async function memberList() {
             check = 0;
-            var sql_participation = `select * from Participation where RoomID = ${roomID}`
+            var sql_participation = `select * from Participation where RoomID = ${roomID} order by Score desc`
             var objects_participation = await osql.connect(sql_participation);
 
-            var sql_classes = `select * from Classes innner join Questions on QuestionID = Questions.ID where RoomID = ${roomID}`
-            var objects_classes = await osql.connect(sql_classes);
-            console.log(objects_classes)
-
-            var questionList = []
-            for (var i = 0; i < objects_classes.length; i++) {
-                object_classes = objects_classes[i];
-                questionList.push(object_classes.UserID);
-            }
-            console.log(questionList);
             var html = '';
             html = html + '<table border="1">';
-            html = html + '<tr><td>参加者</td><td>問題登録</td></tr>'
+            html = html + '<tr><td>順位</td><td>参加者</td><td>正答数</td></tr>'
             for (var i = 0; i < objects_participation.length; i++) {
                 var object_participation = objects_participation[i];
                 html = html + '<tr>';
+                html = html + `<td>${i + 1}</td>`;
                 html = html + `<td>${object_participation.UserID}</td>`;
-                if (questionList.includes(object_participation.UserID)) {
-                    html = html + `<td>登録済み</td>`;
-                } else {
-                    html = html + `<td>未登録</td>`;
-                    check += 1;
-                }
+                html = html + `<td>${object_participation.Score}</td>`;
                 html = html + '</tr>';
             }
             html = html + '</table>';
@@ -82,7 +61,7 @@
 </head>
 
 <body>
-    <h1><span id="roomname"></span></h1>
+    <h1><span id="roomname"></span>の結果</h1>
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="quiz_index.html">top</a>
