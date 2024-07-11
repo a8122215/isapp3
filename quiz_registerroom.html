@@ -30,15 +30,34 @@
         });
 
         async function register() {
+            var result = judge();
+            console.log(result);
+            console.log(result.length);
+            if (result.length == 5) {
+                console.log('ok');
+                console.log(result);
+            } else {
+                console.log('ng');
+                alert('問題を入力してください');
+            }
+        }
+
+        function judge() {
+            var result = [];
             var quiz = document.getElementById('quiz').value;
             var choise1 = document.getElementById('choise1').value;
             var choise2 = document.getElementById('choise2').value;
             var choise3 = document.getElementById('choise3').value;
             var answer = document.getElementById('answer').value;
             if (quiz != '' && choise1 != '' && choise2 != '' && choise3 != '') {
-                console.log('ok');
+                result.push(quiz);
+                result.push(choise1);
+                result.push(choise2);
+                result.push(choise3);
+                result.push(answer);
+                return result;
             } else {
-                console.log('ng');
+                return result;
             }
         }
 
