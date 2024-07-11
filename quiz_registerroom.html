@@ -28,10 +28,10 @@
             }
             var state = object[0].State;
             if (state == 0) {
+                progress_judge();
                 document.getElementById('register_box').style.visibility = 'visible';
                 document.getElementById('progress').style.visibility = 'hidden';
                 document.getElementById('result').style.visibility = 'hidden';
-                progress_judge();
             } else if (state == 1) {
                 document.getElementById('register_box').style.visibility = 'hidden';
                 document.getElementById('progress').style.visibility = 'visible';
@@ -124,7 +124,7 @@
         <a href="quiz_index.html">top</a>
     </div>
     <hr>
-    <div id="register_box">
+    <div id="register_box" style="visibility: hidden">
         問題文　：<input id="quiz" type="text" style="width: 400px;"><br>
         選択肢１：<input id="choise1" type="text" style="width: 400px;"><br>
         選択肢２：<input id="choise2" type="text" style="width: 400px;"><br>
@@ -138,10 +138,10 @@
         <br>
         <button onclick="register()">登録</button>
     </div>
-    <div id="progress">
+    <div id="progress" style="visibility: hidden">
         参加は締め切られました。
     </div>
-    <div id="result">
+    <div id="result" style="visibility: hidden">
         結果
     </div>
     <br>
