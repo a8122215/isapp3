@@ -107,6 +107,9 @@
             console.log(parcent);
             var sql_parsent = `update Participation set Score = ${parcent} where RoomID = ${roomID} AND UserID = ${me.studentid};`;
             await osql.connect(sql_parsent);
+
+            var sql_state = `update Participation set Score = 3 where RoomID = ${roomID}`
+            await osql.connect(sql_state);
             window.location.href = `quiz_resultroom.html?roomId=${roomID}`
         }
 
