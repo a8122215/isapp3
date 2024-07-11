@@ -27,8 +27,43 @@
             } else {
                 document.getElementById('roomname').innerHTML = odai;
             }
-            memberList();
+            if (object[0].State != 3) {
+                state_check();
+            }
+            refresh();
         });
+
+        async function state_check() {
+            var loaded = localStorage.getItem('Quiz');
+            loaded = JSON.parse(loaded);
+            console.log(loaded);
+            var sql_participation = `select * from Participation where RoomID = ${roomID};`;
+            var objects_participation = await osql.connect(sql_participation);
+            var count = 0;
+            for (var i = 0; i < objects_participation.length; i++) {
+                var object = objects_participation[i].Score;
+                if (object != null) {
+                    count += 1;
+                }
+            }
+
+            if (count == loaded) {
+                var sql_state3 = `update Rooms set State = 3 where ID = ${roomID};`;
+                await osql.connect(sql_state3);
+            }
+        }
+
+        async function refresh() {
+            var sql_state = `select * from Rooms where ID = ${roomID};`;
+            var object_state = await osql.connect(sql_state);
+            var state = object_state[0].State;
+            if (state == 3) {
+                document.getElementById('state1-2').style.visibility = 'hidden';
+                memberList();
+            } else {
+                document.getElementById('state1-2').style.visibility = 'visible';
+            }
+        }
 
         async function memberList() {
             check = 0;
@@ -67,14 +102,9 @@
         <a href="quiz_index.html">top</a>
     </div>
     <hr>
-    <div>
-        <button onclick="entryClose()" style="visibility: hidden" id="close">参加締切</button>
-        <br>
-        <button onclick="start()" style="visibility: hidden" id="start">開始</button>
-    </div>
     <div id="memberList"></div>
     <br>
-    <div id="comments"></div>
+    <p id="state1-2" style="visibility: hidden">参加は締め切られました</p>
 </body>
 
 </html>

@@ -27,7 +27,7 @@
             var sql = `insert into Rooms (Name,State) values('${name}',0);`;
             var roomID = await osql.connectInsert(sql);
             console.log(roomID);
-            var sql_participation_register = `insert into Participation (UserID,RoomID) values (${me.studentid}, ${roomID});`;
+            var sql_participation_register = `insert into Participation (UserID,RoomID,Score) values (${me.studentid}, ${roomID},);`;
             var object_participation_register = await osql.connectInsert(sql_participation_register);
             refreshRooms();
         }
@@ -74,7 +74,16 @@
                 } else {
                     html = html + '<td> </td>';
                 }
-                html = html + `<td><a href="quiz_registerroom.html?roomId=${object.ID}">入室</a></td>`;
+
+                if (object.State == 3) {
+                    html = html + `<td><a href="quiz_resultroom.html?roomId=${object.ID}">入室</a></td>`;
+                } else if (inRoom.includes(object.ID)) {
+                    html = html + `<td><a href="quiz_registerroom.html?roomId=${object.ID}">入室</a></td>`;
+                } else if (object.State != 0) {
+                    html = html + `<td><a href="quiz_resultroom.html?roomId=${object.ID}">入室</a></td>`;
+                } else {
+                    html = html + `<td><a href="quiz_registerroom.html?roomId=${object.ID}">入室</a></td>`;
+                }
                 html = html + '</tr>';
             }
             html = html + '</table>';
