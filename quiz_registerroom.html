@@ -95,6 +95,8 @@
                 var sql_room_question = `insert into Classes (RoomID,QuestionID)
                     values (${roomID},${Number(object_question)});`;
                 var object_class = await osql.connectInsert(sql_room_question);
+                var register_quizlevel = `insert into QuizLevel (QuestionID, TryCount, AnswerCount) values ('${Number(object_question)}', 0, 0);`;
+                var object_quizlevel = await osql.connectInsert(register_quizlevel);
                 window.location.href = `quiz_waitroom.html?roomId=${roomID}`
             } else {
                 console.log('ng');
