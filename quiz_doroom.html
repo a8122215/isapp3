@@ -29,6 +29,8 @@
             } else {
                 document.getElementById('roomname').innerHTML = odai;
             }
+            makeQuiz();
+            Quiz();
         });
 
         async function makeQuiz() {
@@ -37,43 +39,18 @@
             console.log(quizList);
         }
 
-        async function menberList() {
-            check = 0;
-            var sql_participation = `select * from Participation where RoomID = ${roomID}`
-            var objects_participation = await osql.connect(sql_participation);
-
-            var sql_classes = `select * from Classes innner join Questions on QuestionID = Questions.ID where RoomID = ${roomID}`
-            var objects_classes = await osql.connect(sql_classes);
-            console.log(objects_classes)
-
-            var questionList = []
-            for (var i = 0; i < objects_classes.length; i++) {
-                object_classes = objects_classes[i];
-                questionList.push(object_classes.UserID);
-            }
-            console.log(questionList);
-            var html = '';
-            html = html + '<table border="1">';
-            html = html + '<tr><td>参加者</td><td>問題登録</td></tr>'
-            for (var i = 0; i < objects_participation.length; i++) {
-                var object_participation = objects_participation[i];
-                html = html + '<tr>';
-                html = html + `<td>${object_participation.UserID}</td>`;
-                if (questionList.includes(object_participation.UserID)) {
-                    html = html + `<td>登録済み</td>`;
-                } else {
-                    html = html + `<td>未登録</td>`;
-                    check += 1;
-                }
-                html = html + '</tr>';
-            }
-            html = html + '</table>';
-            document.getElementById('memberList').innerHTML = html;
-        }
-
-        async function move() {
-            window.location.href = `quiz_resultroom.html?roomId=${roomID}`
-
+        function Quiz() {
+            var quiz = quizList[nowQuiz];
+            var sentence = quiz.Quiz;
+            var choise1 = quiz.Choise1;
+            var choise1 = quiz.Choise2;
+            var choise1 = quiz.Choise3;
+            var answer = quiz.Answer;
+            document.getElementById('Quiz').innerHTML = odai;
+            document.getElementById('Choise1').innerHTML = odai;
+            document.getElementById('Choise2').innerHTML = odai;
+            document.getElementById('Choise3').innerHTML = odai;
+            document.getElementById('result').innerHTML = odai;
         }
 
 
@@ -89,11 +66,22 @@
     </div>
     <hr>
     <div>
-        <button onclick="entryClose()" style="visibility: hidden" id="close">参加締切</button>
+        <p id="Quiz">問題文</p>
+        <p id="Choise1">選択肢１</p>
+        <p id="Choise2">選択肢２</p>
+        <p id="Choise3">選択肢３</p>
+        正解の選択肢
+        <select id="answer">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
         <br>
-        <button onclick="start()" style="visibility: hidden" id="start">開始</button>
+        <button onclick="answer()"></button>
+        <div style="visibility: hidden" id="result"></div>
+        <hr>
+        <button onclick="next()" style="visibility: hidden" id="next">次の問題へ</button>
     </div>
-    <div id="memberList"></div>
     <br>
     <div id="comments"></div>
 </body>
