@@ -13,12 +13,14 @@
 
         $(document).ready(async function () {
             var me = await osql.getMe();
-            console.log(me);
             var name = me.lname + me.fname;
-            var sql2 = `select * from Users where StudentID = '${me.studentid}';`;
+            var ID = me.studentid;
+            var sql2 = `select * from Users where StudentID = '${ID}';`;
             var objects = await osql.connect(sql2);
-            if (objects.length == 0) {
-                var sql = `insert ignore into Users (StudentID, Name) values('${me.studentid}', '${name}');`;
+            var howlong = objects.length;
+            console.log(ID + ',' + name + ',' + howlong);
+            if (howlong == 0) {
+                var sql = `insert ignore into Users (StudentID, Name) values('${ID}', '${name}');`;
                 await osql.connectInsert(sql);
             }
 
