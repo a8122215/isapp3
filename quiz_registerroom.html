@@ -32,6 +32,7 @@
                 document.getElementById('roomname').innerHTML = odai;
             }
             Participation_register();
+            move_check();
             state_check();
             setInterval(state_check, 1000);
         });
@@ -84,6 +85,14 @@
             if (state > 1) {
                 document.getElementById('register_box').style.visibility = 'hidden';
                 document.getElementById('progress').style.visibility = 'visible';
+            }
+        }
+
+        async function move_check() {
+            var sql_classes = `select * from Classes inner join Questions on Classes.QuestionID = Questions.ID where RoomID = ${roomID};`;
+            var object_classes = await osql.connect(sql_classes);
+            if (object_classes.length != 0) {
+                window.location.href = `quiz_waitroom.html?roomId=${roomID}`
             }
         }
 

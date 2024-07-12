@@ -50,10 +50,9 @@
         }
 
         function Quiz() {
-            console.log(nowQuiz);
             document.getElementById('answer_button').style.visibility = 'visible';
             document.getElementById('next').style.visibility = 'hidden';
-            answer = document.getElementById('kotae').innerHTML = '';
+            document.getElementById('kotae').innerHTML = '';
             var quiz = quizList[nowQuiz];
             var sentence = quiz.Quiz;
             var choise1 = quiz.Choise1;
@@ -94,25 +93,39 @@
         }
 
         async function end() {
-            var sql_quiz2 = `select * from (Questions inner join Classes on Questions.ID = Classes.QuestionID) inner join QuizLevel on Classes.QuestionID = QuizLevel.QuestionID where RoomID = ${roomID};`;
-            var quizList2 = await osql.connect(sql_quiz2);
-            localStorage.setItem('Quiz', JSON.stringify(0));
-            console.log(correct_miss);
+            // var sql_quiz2 = `select * from (Questions inner join Classes on Questions.ID = Classes.QuestionID) inner join QuizLevel on Classes.QuestionID = QuizLevel.QuestionID where RoomID = ${roomID};`;
+            // var quizList2 = await osql.connect(sql_quiz2);
+            // console.log(correct_miss);
+            // var parcent;
+            // for (var i = 0; i < correct_miss.length; i++) {
+            //     if (correct_miss[i]) {
+            //         parcent = + 1;
+            //         var Acount = quizList2[i].AnswerCount + 1;
+            //         var sql_answer = `update QuizLevel set AnswerCount = '${Acount}' where QuestionID = ${quizList2[i].QuestionID};`;
+            //         await osql.connect(sql_answer);
+            //     }
+            //     var Tcount = quizList2[i].TryCount + 1;
+            //     var sql_try = `update QuizLevel set TryCount = '${Tcount}' where QuestionID = ${quizList2[i].QuestionID};`;
+            //     await osql.connect(sql_try);
+            // }
             var parcent;
-            for (var i = 0; i < correct_miss.length; i++) {
+            var sql_log = `insert into Log (QuestionID,UserID,Result) values `
+            for (var t = 0; t < correct_miss.length; i++) {
+                var quiz = quizList[i];
                 if (correct_miss[i]) {
-                    parcent = + 1;
-                    var Acount = quizList2[i].AnswerCount + 1;
-                    var sql_answer = `update QuizLevel set AnswerCount = '${Acount}' where QuestionID = ${quizList2[i].QuestionID};`;
-                    await osql.connect(sql_answer);
+                    parcent += 1;
+                    sql_log = sql_log + `(${quiz.ID},${me.studentid},'correct')`
+                } else {
+                    sql_log = sql_log + `(${quiz.ID},${me.studentid},'miss')`
                 }
-                var Tcount = quizList2[i].TryCount + 1;
-                var sql_try = `update QuizLevel set TryCount = '${Tcount}' where QuestionID = ${quizList2[i].QuestionID};`;
-                await osql.connect(sql_try);
+                if (i != 0) {
+                    sql_log = sql_log + `,`
+                }
             }
-            console.log(parcent);
+            sql_log = sql_log + `;`
             var sql_parsent = `update Participation set Score = ${parcent} where RoomID = ${roomID} AND UserID = ${me.studentid};`;
             await osql.connect(sql_parsent);
+            await osql.connectInsert(sql_log);
 
             window.location.href = `quiz_resultroom.html?roomId=${roomID}`
         }
