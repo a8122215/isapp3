@@ -40,6 +40,7 @@
             var sql_participation = `select * from Participation where RoomID = ${roomID};`;
             var objects_participation = await osql.connect(sql_participation);
             var count = 0;
+            console.log(objects_participation)
             for (var i = 0; i < objects_participation.length; i++) {
                 var object = objects_participation[i].Score;
                 if (object != null) {
@@ -68,6 +69,7 @@
         async function memberList() {
             var sql_participation = `select * from Participation where RoomID = ${roomID} order by Score desc`
             var objects_participation = await osql.connect(sql_participation);
+            console.log(objects_participation)
             var score = [];
             var order = [];
             for (var i = 0; i < objects_participation.length; i++) {
@@ -79,19 +81,20 @@
             if (objects_participation[0].Score != null) {
                 order.push(1);
             }
-            for (var i = 0; i < score.length; i++) {
+            for (var i = 0; i < score.length - 1; i++) {
                 if (score[i] == score[i + 1]) {
                     order.push(order[i]);
                 } else {
                     order.push(i + 1);
                 }
             }
-
+            console.log('order' + order + ',score' + score)
             var html = '';
             html = html + '<table border="1">';
             html = html + '<tr><td>順位</td><td>参加者</td><td>正答数</td></tr>'
             for (var i = 0; i < order.length; i++) {
                 var object_participation = objects_participation[i];
+                console.log(object_participation)
                 html = html + '<tr>';
                 html = html + `<td>${order[i]}</td>`;
                 html = html + `<td>${object_participation.UserID}</td>`;

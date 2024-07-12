@@ -34,6 +34,10 @@
             loaded = JSON.parse(loaded);
             console.log(loaded);
             nowQuiz = loaded;
+            var loaded_2 = localStorage.getItem('correct');
+            loaded_2 = JSON.parse(loaded_2);
+            correct_miss = loaded_2;
+            console.log(correct_miss)
             makeQuiz();
         });
 
@@ -86,6 +90,7 @@
                 document.getElementById('next').style.visibility = 'visible';
             }
             localStorage.setItem('Quiz', JSON.stringify(nowQuiz));
+            localStorage.setItem('correct', JSON.stringify(correct_miss));
         }
 
         function next() {
@@ -93,6 +98,7 @@
         }
 
         async function end() {
+            console.log(correct_miss)
             // var sql_quiz2 = `select * from (Questions inner join Classes on Questions.ID = Classes.QuestionID) inner join QuizLevel on Classes.QuestionID = QuizLevel.QuestionID where RoomID = ${roomID};`;
             // var quizList2 = await osql.connect(sql_quiz2);
             // console.log(correct_miss);
@@ -108,23 +114,25 @@
             //     var sql_try = `update QuizLevel set TryCount = '${Tcount}' where QuestionID = ${quizList2[i].QuestionID};`;
             //     await osql.connect(sql_try);
             // }
-            var parcent;
+            var parcent = 0;;
             var sql_log = `insert into Log (QuestionID,UserID,Result) values `
-            for (var t = 0; t < correct_miss.length; i++) {
-                var quiz = quizList[i];
-                if (correct_miss[i]) {
+            for (var t = 0; t < correct_miss.length; t++) {
+                var quiz = quizList[t];
+                if (correct_miss[t]) {
                     parcent += 1;
                     sql_log = sql_log + `(${quiz.ID},${me.studentid},'correct')`
                 } else {
                     sql_log = sql_log + `(${quiz.ID},${me.studentid},'miss')`
                 }
-                if (i != 0) {
+                if (t != 0) {
                     sql_log = sql_log + `,`
                 }
             }
             sql_log = sql_log + `;`
+            console.log(sql_log)
+            console.log('par' + parcent)
             var sql_parsent = `update Participation set Score = ${parcent} where RoomID = ${roomID} AND UserID = ${me.studentid};`;
-            await osql.connect(sql_parsent);
+            var aaa = await osql.connect(sql_parsent);
             await osql.connectInsert(sql_log);
 
             window.location.href = `quiz_resultroom.html?roomId=${roomID}`
