@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+
+    <script>
+        osql.requireLogin();
+
+        var me;
+        var Level = osql.getParam('level');
+        console.log(Level);
+
+        $(document).ready(async function () {
+            me = await osql.getMe();
+            document.getElementById('firstname').innerHTML = me.fname;
+            document.getElementById('lastname').innerHTML = me.lname;
+        });
+        function logout() {
+            osql.logout();
+        }
+    </script>
+
+</head>
+
+<body>
+    <h1>QUIZ!!</h1>
+    <div style="text-align: right;">
+        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+        <a href="javascript:logout()">logout</a>
+    </div>
+</body>
+
+</html>
