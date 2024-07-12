@@ -31,6 +31,8 @@
                 state_check();
             }
             refresh();
+            setInterval(refresh, 1000);
+
         });
 
         async function state_check() {

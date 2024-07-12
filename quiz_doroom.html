@@ -38,8 +38,17 @@
             loaded_2 = JSON.parse(loaded_2);
             correct_miss = loaded_2;
             console.log(correct_miss)
+            movechck();
             makeQuiz();
         });
+
+        async function movechck() {
+            var sql_move = `select * from Participation where RoomID = ${roomID} AND UserID = ${me.studentid};`;
+            var object_move = await osql.connect(sql_move);
+            if (object_move[0].Score != null) {
+                window.location.href = `quiz_resultroom.html?roomId=${roomID}`
+            }
+        }
 
         async function makeQuiz() {
             var sql_quiz = `select * from Questions inner join Classes on Questions.ID = Classes.QuestionID where RoomID = ${roomID};`;
@@ -116,24 +125,36 @@
             // }
             var parcent = 0;;
             var sql_log = `insert into Log (QuestionID,UserID,Result) values `
-            for (var t = 0; t < correct_miss.length; t++) {
+            var sql_Level_Answer = `update QuizLevel set AnswerCount = AnswerCount + 1 where `
+            var sql_Level_Try = `update QuizLevel set TryCount = TryCount + 1 where `
+            var cm_len = correct_miss.length
+            for (var t = 0; t < cm_len; t++) {
                 var quiz = quizList[t];
                 if (correct_miss[t]) {
                     parcent += 1;
                     sql_log = sql_log + `(${quiz.ID},${me.studentid},'correct')`
+                    sql_Level_Answer = sql_Level_Answer + `QuestionID = ${quiz.ID}`;
+                    sql_Level_Try = sql_Level_Try + `QuestionID = ${quiz.ID}`;
                 } else {
-                    sql_log = sql_log + `(${quiz.ID},${me.studentid},'miss')`
+                    sql_log = sql_log + `(${quiz.ID},${me.studentid},'miss')`;
+                    sql_Level_Try = sql_Level_Try + `QuestionID = ${quiz.ID}`;
                 }
-                if (t != 0) {
-                    sql_log = sql_log + `,`
+                if (t != cm_len - 1) {
+                    sql_log = sql_log + `,`;
+                    sql_Level_Answer = sql_Level_Answer + ` or `;
+                    sql_Level_Try = sql_Level_Try + ` or `;
                 }
             }
-            sql_log = sql_log + `;`
-            console.log(sql_log)
-            console.log('par' + parcent)
+            sql_log = sql_log + `;`;
+            sql_Level_Answer = sql_Level_Answer + `;`;
+            sql_Level_Try = sql_Level_Try + `;`;
+            console.log(sql_Level_Answer);
+            console.log(sql_Level_Try)
             var sql_parsent = `update Participation set Score = ${parcent} where RoomID = ${roomID} AND UserID = ${me.studentid};`;
-            var aaa = await osql.connect(sql_parsent);
+            await osql.connect(sql_parsent);
             await osql.connectInsert(sql_log);
+            await osql.connect(sql_Level_Answer);
+            await osql.connect(sql_Level_Try);
 
             window.location.href = `quiz_resultroom.html?roomId=${roomID}`
         }
