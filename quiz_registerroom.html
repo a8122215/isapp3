@@ -40,7 +40,13 @@
         async function Participation_register() {
             var sql_participation = `select * from Participation where UserID = ${me.studentid} AND RoomID = ${roomID};`;
             var object_participation = await osql.connect(sql_participation);
-            if (object_participation.length == 0 && State == 0) {
+            var sql_state = `select * from Rooms where ID = ${roomID};`;
+            var object_state = await osql.connect(sql_state);
+            var state = object_state[0].State;
+            console.log(object_state)
+            console.log(state);
+            console.log(object_participation.length)
+            if (object_participation.length == 0 && state == 0) {
                 var sql_participation_register = `insert into Participation (UserID,RoomID) values (${me.studentid}, ${roomID});`;
                 object_participation_register = await osql.connectInsert(sql_participation_register);
             }
