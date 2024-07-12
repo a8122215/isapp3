@@ -95,7 +95,7 @@
         }
 
         async function move_check() {
-            var sql_classes = `select * from Classes inner join Questions on Classes.QuestionID = Questions.ID where RoomID = ${roomID};`;
+            var sql_classes = `select * from Classes inner join Questions on Classes.QuestionID = Questions.ID where RoomID = ${roomID} and UserID = ${me.studentid};`;
             var object_classes = await osql.connect(sql_classes);
             if (object_classes.length != 0) {
                 window.location.href = `quiz_waitroom.html?roomId=${roomID}`
