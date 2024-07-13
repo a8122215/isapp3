@@ -28,7 +28,7 @@
             objects_quizlevel = await osql.connect(sql_quizlevel);
             quiz_sort();
         });
-        async function quiz_sort() {
+        function quiz_sort() {
             let quizlevel = {};
             for (let i = 0; i < objects_quizlevel.length; i++) {
                 var object = objects_quizlevel[i];
@@ -50,19 +50,38 @@
             console.log(quiz_nan);
             console.log(quizlevel);
         }
-        function logout() {
-            osql.logout();
-        }
     </script>
 
 </head>
 
 <body>
-    <h1>QUIZ!!</h1>
+    <h1>SOLO QUIZ!!</h1>
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
-        <a href="javascript:logout()">logout</a>
+        <a href="quiz_index.html">top</a>
     </div>
+    <hr>
+    <div>
+        <p>問題文　：　<span id="Quiz"></span></p>
+        <p>選択肢１：　<span id="Choise1"></span></p>
+        <p>選択肢２：　<span id="Choise2"></span></p>
+        <p>選択肢３：　<span id="Choise3"></span></p>
+        正解の選択肢
+        <select id="answer">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
+        <br>
+        <button onclick="answer()" id="answer_button">回答</button>
+        <p id="kotae"></p>
+        <div style="visibility: hidden" id="result"></div>
+        <hr>
+        <button onclick="next()" style="visibility: hidden" id="next">次の問題へ</button>
+        <button onclick="end()" style="visibility: hidden" id="end">結果を見る</button>
+    </div>
+    <br>
+    <div id="comments"></div>
 </body>
 
 </html>
