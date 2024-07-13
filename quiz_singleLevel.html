@@ -12,6 +12,7 @@
 
         var me;
         var Level = osql.getParam('level');
+        var objects_quizlevel = [];
         console.log(Level);
 
         $(document).ready(async function () {
@@ -19,16 +20,19 @@
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
 
+            var sql_quizlevel = `select * from QuizLevel;`;
+            objects_quizlevel = await osql.connect(sql_quizlevel);
+            quiz_sort();
+        });
+        async function quiz_sort() {
             let quizlevel = {};
-            var sql = `select * from QuizLevel;`;
-            var objects = await osql.connect(sql);
-            for (let i = 0; i < objects.length; i++) {
-                var object = objects[i];
-                var percent = object.AnswerCount / object.TryCount * 100;
+            for (let i = 0; i < objects_quizlevel.length; i++) {
+                var object = objects_quizlevel[i];
+                var percent = Math.round((object.AnswerCount / object.TryCount) * 100);
                 quizlevel[object.QuestionID] = percent;
             }
             console.log(quizlevel);
-        });
+        }
         function logout() {
             osql.logout();
         }
