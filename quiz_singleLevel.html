@@ -18,6 +18,16 @@
             me = await osql.getMe();
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
+
+            let quizlevel = {};
+            var sql = `select * from QuizLevel;`;
+            var objects = await osql.connect(sql);
+            for (let i = 0; i < objects.length; i++) {
+                var object = objects[i];
+                var percent = object.AnswerCount / object.TryCount * 100;
+                quizlevel[object.QuestionID] = percent;
+            }
+            console.log(quizlevel);
         });
         function logout() {
             osql.logout();
