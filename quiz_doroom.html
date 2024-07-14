@@ -42,6 +42,7 @@
             await movechck();
             await makeQuiz();
             await makeCreator();
+            await Quiz();
         });
 
         async function movechck() {
@@ -58,29 +59,26 @@
             if (nowQuiz >= quizList.length) {
                 document.getElementById('answer_button').style.visibility = 'hidden';
                 document.getElementById('end').style.visibility = 'visible';
-            } else {
-                Quiz();
             }
         }
 
         async function makeCreator() {
-            var sql_creator = `select * Users where `
-            console.log(quizList)
-            for (var i = 0; i < quizList.length; i++) {
-                console.log(quizList[i].UserID)
+            var sql_creator = `select * from Users where `
+            var len_creator = quizList.length;
+            for (var i = 0; i < len_creator; i++) {
                 var creatorsID = quizList[i].UserID
-                sql_creator = sql_creator + `UserID = ${creatorsID}`;
-                if (i != quizList.length) {
+                sql_creator = sql_creator + `StudentID = ${creatorsID}`;
+                if (i != len_creator && len_creator != 1) {
                     sql_creator = sql_creator + ` or `
                 }
             }
             sql_creator = sql_creator + `;`;
             var objects_creator = await osql.connect(sql_creator);
-            for (var i = 0; i < object_creator.length; i++) {
-                object_creator = objects_creator[i];
+            console.log(objects_creator);
+            for (var i = 0; i < objects_creator.length; i++) {
+                var object_creator = objects_creator[i];
                 quiz_creator[object_creator.StudentID] = `${object_creator.Name}`;
             }
-            show(quiz_creator);
         }
 
         function Quiz() {
@@ -88,11 +86,14 @@
             document.getElementById('next').style.visibility = 'hidden';
             document.getElementById('kotae').innerHTML = '';
             var quiz = quizList[nowQuiz];
+            var quiz_id = quiz.UserID;
+            var creator = quiz_creator[quiz_id];
             var sentence = quiz.Quiz;
             var choise1 = quiz.Choise1;
             var choise2 = quiz.Choise2;
             var choise3 = quiz.Choise3;
             var answer = quiz.Answer;
+            document.getElementById('quiz_creator').innerHTML = creator;
             document.getElementById('Quiz').innerHTML = sentence;
             document.getElementById('Choise1').innerHTML = choise1;
             document.getElementById('Choise2').innerHTML = choise2;
