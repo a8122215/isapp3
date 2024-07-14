@@ -16,6 +16,7 @@
         var nowQuiz = 0;
         var quizList;
         var correct_miss = [];
+        var quiz_creator = {};
 
         $(document).ready(async function () {
             me = await osql.getMe();
@@ -38,8 +39,9 @@
             loaded_2 = JSON.parse(loaded_2);
             correct_miss = loaded_2;
             console.log(correct_miss)
-            movechck();
-            makeQuiz();
+            await movechck();
+            await makeQuiz();
+            await makeCreator();
         });
 
         async function movechck() {
@@ -53,13 +55,32 @@
         async function makeQuiz() {
             var sql_quiz = `select * from Questions inner join Classes on Questions.ID = Classes.QuestionID where RoomID = ${roomID};`;
             quizList = await osql.connect(sql_quiz);
-            console.log(quizList);
             if (nowQuiz >= quizList.length) {
                 document.getElementById('answer_button').style.visibility = 'hidden';
                 document.getElementById('end').style.visibility = 'visible';
             } else {
                 Quiz();
             }
+        }
+
+        async function makeCreator() {
+            var sql_creator = `select * Users where `
+            console.log(quizList)
+            for (var i = 0; i < quizList.length; i++) {
+                console.log(quizList[i].UserID)
+                var creatorsID = quizList[i].UserID
+                sql_creator = sql_creator + `UserID = ${creatorsID}`;
+                if (i != quizList.length) {
+                    sql_creator = sql_creator + ` or `
+                }
+            }
+            sql_creator = sql_creator + `;`;
+            var objects_creator = await osql.connect(sql_creator);
+            for (var i = 0; i < object_creator.length; i++) {
+                object_creator = objects_creator[i];
+                quiz_creator[object_creator.StudentID] = `${object_creator.Name}`;
+            }
+            show(quiz_creator);
         }
 
         function Quiz() {
@@ -177,6 +198,7 @@
     </div>
     <hr>
     <div>
+        <p>作問者　：　<span id="quiz_creator"></span></p>
         <p>問題文　：　<span id="Quiz"></span></p>
         <p>選択肢１：　<span id="Choise1"></span></p>
         <p>選択肢２：　<span id="Choise2"></span></p>
