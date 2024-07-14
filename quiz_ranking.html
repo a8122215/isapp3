@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+
+    <script>
+        osql.requireLogin();
+
+        var me;
+        var roomID = osql.getParam('roomId');
+        var Ranking_dic_correct = {};
+        var Ranking_dic_miss = {};
+        var ranking_dic_user = {};
+
+        $(document).ready(async function () {
+            me = await osql.getMe();
+            document.getElementById('firstname').innerHTML = me.fname;
+            document.getElementById('lastname').innerHTML = me.lname;
+
+            await create_ranking();
+        });
+
+        async function create_ranking() {
+            var sql_user = `select * from Users;`;
+            var sql_correct = `select ID,Name,Result,count(*) from Log inner join Users on Log.UserID = Users.StudentID where Result = 'correct' group by ID order by ID asc;`;
+            var sql_miss = `select ID,Name,Result,count(*) from Log inner join Users on Log.UserID = Users.StudentID where Result = 'miss' group by ID order by ID asc;`;
+            var objects_user = await osql.connect(sql_user);
+            var object_correct = await osql.connect(sql_correct);
+            var object_miss = await osql.connect(sql_miss);
+            var len_ranking;
+            var ranking_user_list = [];
+            for (let i = 0; i < objects_user.length; i++) {
+                let object = objects_user[i];
+                ranking_dic_user[object.ID] = object.Name;
+                ranking_user_list.push(object.ID);
+            }
+            len_ranking = ranking_user_list.length;
+            for (let i = 0; i < len_ranking; i++) {
+                let user = ranking_user_list[i];
+                Ranking_dic_correct[user] = 0;
+                Ranking_dic_miss[user] = 0;
+            }
+            console.log(Ranking_dic_correct);
+            console.log(Ranking_dic_miss);
+        }
+
+
+    </script>
+
+</head>
+
+<body>
+    <h1>robby</h1>
+    <div style="text-align: right;">
+        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+        <a href="index.html">top</a>
+    </div>
+    <hr>
+    <div>
+        <a href="quiz_resultroom.html">ランキング</a>
+    </div>
+    <hr>
+</body>
+
+</html>
