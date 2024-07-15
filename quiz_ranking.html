@@ -41,17 +41,17 @@
             len_ranking = ranking_user_list.length;
             for (let i = 0; i < len_ranking; i++) {
                 let user = ranking_user_list[i];
-                ranking_dic_parcent[user] = { correct: [0], miss: [0], par: [0], Name: '' };
+                console.log(user);
+                ranking_dic_parcent[user] = { Correct: 0, Miss: 0, Par: 0, Name: '' };
+                console.log(ranking_dic_parcent)
             }
-            console.log(objects_correct);
-            console.log(objects_miss);
-            console.log(ranking_dic_parcent);
+            console.log(ranking_dic_parcent)
             for (let i = 0; i < len_ranking; i++) {
                 let object_correct = objects_correct[i];
                 let object_miss = objects_miss[i];
                 let object_user = ranking_user_list[i];
-                ranking_dic_parcent[object_user]['correct'] = objects_correct.count;
-                ranking_dic_parcent[object_user]['miss'] = objects_miss.count;
+                ranking_dic_parcent[object_user].Correct = object_correct.count;
+                ranking_dic_parcent[object_user].Miss = object_miss.count;
             }
             console.log(ranking_dic_parcent)
         }
