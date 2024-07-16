@@ -13,8 +13,6 @@
 
         var me;
         var roomID = osql.getParam('roomId');
-        var ranking_dic_user = {};
-        var ranking_dic_parcent = {};
 
         $(document).ready(async function () {
             me = await osql.getMe();
@@ -25,81 +23,36 @@
         });
 
         async function create_ranking() {
-            var sql_user = `select * from Users;`;
-            var sql_correct = `select ID,Name,Result,count(*) as count from Log inner join Users on Log.UserID = Users.StudentID where Result = 'correct' group by ID order by ID asc;`;
-            var sql_miss = `select ID,Name,Result,count(*) as count from Log inner join Users on Log.UserID = Users.StudentID where Result = 'miss' group by ID order by ID asc;`;
-            var objects_user = await osql.connect(sql_user);
-            var objects_correct = await osql.connect(sql_correct);
-            var objects_miss = await osql.connect(sql_miss);
-            let len_ranking;
-            let ranking_user_list = [];
-            for (let i = 0; i < objects_user.length; i++) {
+            let sql_user = `select * from Users;`;
+            let sql_correct = `select ID,Name,Result,count(*) as count from Log inner join Users on Log.UserID = Users.StudentID where Result = 'correct' group by ID order by ID asc;`;
+            let sql_miss = `select ID,Name,Result,count(*) as count from Log inner join Users on Log.UserID = Users.StudentID where Result = 'miss' group by ID order by ID asc;`;
+            let objects_user = await osql.connect(sql_user);
+            let objects_correct = await osql.connect(sql_correct);
+            let objects_miss = await osql.connect(sql_miss);
+            let ranking_dic_parcent = {}
+            let len_ranking = objects_user.length;
+            console.log(objects_user);
+            console.log(objects_correct);
+            console.log(objects_miss);
+            console.log('長さ：' + len_ranking)
+            for (let i = 0; i < len_ranking; i++) {
                 let object = objects_user[i];
-                ranking_dic_user[object.ID] = object.Name;
-                ranking_user_list.push(object.ID);
+                ranking_dic_parcent[object.ID] = {};
+                console.log(object.Name)
+                ranking_dic_parcent[object.ID].Name = object.Name
             }
-            len_ranking = ranking_user_list.length;
-            for (let i = 0; i < len_ranking; i++) {
-                let user = ranking_user_list[i];
-                ranking_dic_parcent[user] = { Correct: 0, Miss: 0, Par: 0, Name: '' };
-            }
-            console.log(ranking_dic_user)
-            for (let i = 0; i < len_ranking; i++) { //ユーザーのIDをキーとして正当数、誤答数、正解率、名前の辞書をつくる
-                let object_correct = objects_correct[i];
-                let object_miss = objects_miss[i];
-                let object_user = ranking_user_list[i];
-                if (object_correct != undefined) {
-                    ranking_dic_parcent[object_user].Correct = Number(object_correct.count);
-                }
-                if (object_miss != undefined) {
-                    ranking_dic_parcent[object_user].Miss = Number(object_miss.count);
-                }
-                if (ranking_dic_parcent[object_user].Correct != 0 || ranking_dic_parcent[object_user].Miss != 0) {
-                    let ritu = 100 * (ranking_dic_parcent[object_user].Correct) / (ranking_dic_parcent[object_user].Correct + ranking_dic_parcent[object_user].Miss);
-                    ritu = Math.round(ritu);
-                    ranking_dic_parcent[object_user].Par = ritu;
-                }
-                ranking_dic_parcent[object_user].Name = ranking_dic_user[object_user];
-            }
-            console.log(ranking_user_list)
-            let html = '';
-            html = html + '<table border="1">';
-            html = html + '<tr><td>順位</td><td>名前</td><td>正解率</td><td>回答数</td></tr>'
-            for (let i = 0; i < len_ranking; i++) {
-                let kesu = 0;
-                let x = 0;
-                let y = 0;
-                for (let t = 0; t < ranking_user_list.length; t++) {
-                    x = ranking_user_list[t];
-                    if (y < ranking_dic_parcent[x].Par) {
-                        y = ranking_dic_parcent[x].Par;
-                        kesu = t;
-                    }
-                }
-                x = ranking_user_list[kesu]
-                console.log('x' + x);
-                ranking_user_list.splice(kesu, 1);
-                console.log('list' + ranking_user_list)
-                if ((ranking_dic_parcent[x].Correct + ranking_dic_parcent[x].Miss) != 0) {
-                    html = html + '<tr>';
-                    html = html + `<td>${i + 1}</td>`;
-                    html = html + `<td>${ranking_dic_parcent[x].Name}</td>`;
-                    html = html + `<td>${ranking_dic_parcent[x].Par}%</td>`;
-                    html = html + `<td>${ranking_dic_parcent[x].Correct + ranking_dic_parcent[x].Miss}</td>`;
-                    html = html + '</tr>';
-                } else {
-                    html = html + '<tr>';
-                    html = html + `<td>圏外</td>`;
-                    html = html + `<td>${ranking_dic_parcent[x].Name}</td>`;
-                    html = html + `<td></td>`;
-                    html = html + `<td>０</td>`;
-                    html = html + '</tr>';
-                }
-            }
-            html = html + '</table>';
-            document.getElementById('ranking').innerHTML = html;
+            console.log('名前追加')
+            console.log(ranking_dic_parcent)
+            for (let i = 0; i < objects_user; i++) {
+                if (objects_correct[i] === true) {
 
-        }
+                } else {
+
+                    let object = objects_correct[i];
+
+                }
+
+            }
 
 
 
