@@ -88,6 +88,16 @@
             }
             html = html + '</table>';
             document.getElementById('rooms').innerHTML = html;
+
+            var sql_name = `select * from Users where StudentID = ${me.studentid};`;
+            var objects_name = await osql.connect(sql_name);
+            document.getElementById('CurrnetName').innerHTML = objects_name[0].Name;
+        }
+        async function CreateName() {
+            var Nickname = document.getElementById('Nickname').value;
+            var sql = `update Users set Name = '${Nickname}' where StudentID = ${me.studentid};`;
+            await osql.connectInsert(sql);
+            document.getElementById('Nickname').value = '';
         }
 
 
@@ -106,6 +116,10 @@
         <a href="quiz_ranking.html">ランキング</a>
     </div>
     <hr>
+    ニックネーム：<input id="Nickname" type="text">
+    <button onclick="CreateName()">登録</button>
+    <br>
+    現在の名前：<span id="CurrnetName"></span>
     <div>
         <h2>create room</h2>
         <input id="roomname" type="text">
