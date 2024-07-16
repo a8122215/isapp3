@@ -19,15 +19,66 @@
         var quiz_nan = [];
         console.log(Level);
 
+        var nowQuiz = 0;
+        var quizList = [];
+        var correct_miss = [];
+        var quiz_creator = {};
+
         $(document).ready(async function () {
             me = await osql.getMe();
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
 
+            var loaded = localStorage.getItem('Quiz');
+            loaded = JSON.parse(loaded);
+            console.log(loaded);
+            nowQuiz = loaded;
+            var loaded_2 = localStorage.getItem('correct');
+            loaded_2 = JSON.parse(loaded_2);
+            correct_miss = loaded_2;
+            console.log(correct_miss)
+
             var sql_quizlevel = `select * from QuizLevel;`;
             objects_quizlevel = await osql.connect(sql_quizlevel);
             quiz_sort();
+            // await makeQuiz();
+            // await makeCreator();
+            // await Quiz();
         });
+        // async function makeQuiz() {
+        //     if (Level == 'hard') {
+        //         quizList = quiz_hard;
+        //     } else if (Level == 'middle') {
+        //         quizList = quiz_middle;
+        //     } else if (Level == 'easy') {
+        //         quizList = quiz_easy;
+        //     }
+        //     // var sql_quiz = `select * from Questions inner join Classes on Questions.ID = Classes.QuestionID where RoomID = ${roomID};`;
+        //     // quizList = await osql.connect(sql_quiz);
+        //     // if (nowQuiz >= quizList.length) {
+        //     //     document.getElementById('answer_button').style.visibility = 'hidden';
+        //     //     document.getElementById('end').style.visibility = 'visible';
+        //     // }
+        // }
+        // function Quiz() {
+        //     document.getElementById('answer_button').style.visibility = 'visible';
+        //     document.getElementById('next').style.visibility = 'hidden';
+        //     document.getElementById('kotae').innerHTML = '';
+        //     var quiz = quizList[nowQuiz];
+        //     var quiz_id = quiz.UserID;
+        //     // var creator = quiz_creator[quiz_id];
+        //     var sentence = quiz.Quiz;
+        //     var choise1 = quiz.Choise1;
+        //     var choise2 = quiz.Choise2;
+        //     var choise3 = quiz.Choise3;
+        //     var answer = quiz.Answer;
+        //     // document.getElementById('quiz_creator').innerHTML = creator;
+        //     document.getElementById('Quiz').innerHTML = sentence;
+        //     document.getElementById('Choise1').innerHTML = choise1;
+        //     document.getElementById('Choise2').innerHTML = choise2;
+        //     document.getElementById('Choise3').innerHTML = choise3;
+        //     document.getElementById('result').innerHTML = '正解の選択肢 : ' + answer;
+        // }
         function quiz_sort() {
             let quizlevel = {};
             for (let i = 0; i < objects_quizlevel.length; i++) {
