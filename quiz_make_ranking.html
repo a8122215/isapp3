@@ -10,22 +10,42 @@
 
     <script>
         osql.requireLogin();
-
         $(document).ready(async function () {
             var me = await osql.getMe();
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
+            createRanking();
         });
 
         function logout() {
             osql.logout();
+        }
+
+        async function createRanking() {
+            var sql = `select * from Users;`;
+            var objects = await osql.connect(sql);
+            var html = '';
+            html = html + '<table border="1">';
+            for (var i = 0; i < objects.length; i++) {
+                var user = objects[i];
+                var ID = user.StudentID;
+                var sql2 = `select sum(AnswerCount)/sum(TryCount)*100 from Questions inner join QuizLevel on Questions.ID = QuizLevel.QuestionID where UserID = ${ID};`;
+                var objects2 = await osql.connect(sql2);
+                var score = objects2[0]['sum(AnswerCount)/sum(TryCount)*100'];
+                if (score != null) {
+                    html = html + `<tr><td>${user.Name}</td><td>${score}</td></tr>`;
+                }
+                console.log(score);
+            }
+            html = html + '</table>';
+            document.getElementById('Ranking').innerHTML = html;
         }
     </script>
 
 </head>
 
 <body>
-    <h1>QUIZ!!</h1>
+    <h1>CREATER RANKING</h1>
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="javascript:logout()">logout</a>
@@ -38,6 +58,7 @@
         <hr>
         <a href="quiz_singleLevel.html?level='easy'">よゆーな問題</a>
     </div> -->
+    <div id="Ranking"></div>
 </body>
 
 </html>
