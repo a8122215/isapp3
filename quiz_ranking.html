@@ -35,7 +35,7 @@
             console.log(objects_user);
             console.log(objects_correct);
             console.log(objects_miss);
-            console.log('長さ：' + len_ranking)
+            console.log('長さ：' + len_ranking);
             for (let i = 0; i < len_ranking; i++) {
                 let object = objects_user[i];
                 ranking_dic_parcent[object.ID] = {};
@@ -81,8 +81,61 @@
                     ranking_dic_parcent[user].Parcent = par;
                 }
             }
-            console.log('try数追加');
-            console.log(ranking_dic_parcent)
+            console.log('正解確率追加');
+            console.log(ranking_dic_parcent);
+
+            let nagasa = ranking_user_list.length;
+            let kengai = [];
+            let user_list = [];
+
+            for (let i = 0; i < nagasa; i++) {
+                let user = ranking_user_list[i];
+                if (ranking_dic_parcent[user].Parcent < 0) {
+                    kengai.push(user);
+                } else {
+                    user_list.push(user);
+                }
+            }
+            console.log('user : ' + user_list);
+            console.log('kengai : ' + kengai)
+            // 表のHtmlを作る
+            nagasa = user_list.length;
+            let html = '';
+            html = html + '<table border="1">';
+            html = html + '<tr><td>順位</td><td>参加者</td><td>正答確率</td><td>回答数</td></tr>'
+            for (let i = 0; i < nagasa; i++) {
+                let inst_par = 0;
+                let inst_user = 0;
+                let inst_index = 0;
+                for (let t = 0; t < user_list.length; t++) {
+                    user = user_list[t];
+                    par = ranking_dic_parcent[user].Parcent;
+                    if (par > inst_par) {
+                        inst_par = par;
+                        inst_user = user;
+                        inst_index = t;
+                    }
+                }
+                user_list.splice(inst_index, 1)
+                html = html + '<tr>';
+                html = html + `<td>${i + 1}</td>`;
+                html = html + `<td>${ranking_dic_parcent[inst_user].Name}</td>`;
+                html = html + `<td>${inst_par}</td>`;
+                html = html + `<td>${ranking_dic_parcent[inst_user].Try}</td>`;
+                html = html + '</tr>';
+
+            }
+            for (let i = 0; i < kengai.length; i++) {
+                html = html + '<tr>';
+                html = html + `<td>圏外</td>`;
+                html = html + `<td>${ranking_dic_parcent[kengai[i]].Name}</td>`;
+                html = html + `<td>0</td>`;
+                html = html + `<td>0</td>`;
+                html = html + '</tr>';
+
+            }
+            html = html + '</table>';
+            document.getElementById('ranking').innerHTML = html;
         }
 
 
