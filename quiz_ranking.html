@@ -31,6 +31,7 @@
             let objects_miss = await osql.connect(sql_miss);
             let ranking_dic_parcent = {}
             let len_ranking = objects_user.length;
+            let ranking_user_list = [];
             console.log(objects_user);
             console.log(objects_correct);
             console.log(objects_miss);
@@ -39,20 +40,50 @@
                 let object = objects_user[i];
                 ranking_dic_parcent[object.ID] = {};
                 console.log(object.Name)
-                ranking_dic_parcent[object.ID].Name = object.Name
+                ranking_dic_parcent[object.ID].Name = object.Name;
+                ranking_dic_parcent[object.ID].Correct = 0;
+                ranking_dic_parcent[object.ID].Miss = 0;
+                ranking_dic_parcent[object.ID].Try = 0;
+                ranking_dic_parcent[object.ID].Parcent = 0;
+                ranking_user_list.push(object.ID)
             }
             console.log('名前追加')
             console.log(ranking_dic_parcent)
-            for (let i = 0; i < objects_user; i++) {
-                if (objects_correct[i] === true) {
-
-                } else {
-
-                    let object = objects_correct[i];
-
-                }
-
+            console.log(ranking_user_list)
+            for (let i = 0; i < objects_correct.length; i++) {
+                let object = objects_correct[i];
+                ranking_dic_parcent[object.ID].Correct = Number(object.count);
             }
+            console.log('正答数追加');
+            console.log(ranking_dic_parcent)
+            for (let i = 0; i < objects_miss.length; i++) {
+                let object = objects_miss[i];
+                ranking_dic_parcent[object.ID].Miss = Number(object.count);
+            }
+            console.log('ミス数追加');
+            console.log(ranking_dic_parcent)
+            for (let i = 0; i < ranking_user_list.length; i++) {
+                let user = ranking_user_list[i];
+                let count = Number(ranking_dic_parcent[user].Correct) + Number(ranking_dic_parcent[user].Miss);
+                ranking_dic_parcent[user].Try = count
+            }
+            console.log('try数追加');
+            console.log(ranking_dic_parcent)
+            for (let i = 0; i < ranking_user_list.length; i++) {
+                let user = ranking_user_list[i];
+                let correct = Number(ranking_dic_parcent[user].Correct);
+                let count = Number(ranking_dic_parcent[user].Try);
+                if (count === 0) {
+                    ranking_dic_parcent[user].Parcent = -100;
+                } else {
+                    let par = correct / count * 100;
+                    par = Math.round(par * 10) / 10;
+                    ranking_dic_parcent[user].Parcent = par;
+                }
+            }
+            console.log('try数追加');
+            console.log(ranking_dic_parcent)
+        }
 
 
 
