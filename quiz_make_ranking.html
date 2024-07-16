@@ -27,13 +27,12 @@
             var html = '';
             html = html + '<table border="1">';
             for (var i = 0; i < objects.length; i++) {
-                var user = objects[i];
-                var ID = user.StudentID;
-                var sql2 = `select sum(AnswerCount)/sum(TryCount)*100 from Questions inner join QuizLevel on Questions.ID = QuizLevel.QuestionID where UserID = ${ID};`;
+                var sql2 = `select UserID, sum(AnswerCount)/sum(TryCount)*100 from Questions inner join QuizLevel on Questions.ID = QuizLevel.QuestionID group by UserID order by sum(AnswerCount)/sum(TryCount)*100 desc;`;
                 var objects2 = await osql.connect(sql2);
-                var score = objects2[0]['sum(AnswerCount)/sum(TryCount)*100'];
-                if (score != null) {
-                    html = html + `<tr><td>${user.Name}</td><td>${score}</td></tr>`;
+                var score = objects2[i];
+                var number = Math.round(score['sum(AnswerCount)/sum(TryCount)*100']);
+                if (number != null) {
+                    html = html + `<tr><td>${score.UserID}</td><td>${number + "%"}</td></tr>`;
                 }
                 console.log(score);
             }
