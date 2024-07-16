@@ -71,7 +71,7 @@
 
 
         async function memberList() {
-            var sql_participation = `select * from Participation where RoomID = ${roomID} order by Score desc`
+            var sql_participation = `select * from Participation inner join Users on Participation.UserID = Users.StudentID where RoomID = ${roomID} order by Score desc`
             var objects_participation = await osql.connect(sql_participation);
             console.log(objects_participation)
             var score = [];
@@ -101,7 +101,7 @@
                 console.log(object_participation)
                 html = html + '<tr>';
                 html = html + `<td>${order[i]}</td>`;
-                html = html + `<td>${object_participation.UserID}</td>`;
+                html = html + `<td>${object_participation.Name}</td>`;
                 html = html + `<td>${score[i]}</td>`;
                 html = html + '</tr>';
             }
