@@ -30,6 +30,7 @@
             var sql_participation_register = `insert into Participation (UserID,RoomID) values (${me.studentid}, ${roomID});`;
             var object_participation_register = await osql.connectInsert(sql_participation_register);
             refreshRooms();
+            document.getElementById('roomname').value = '';
         }
 
         async function refreshRooms() {
