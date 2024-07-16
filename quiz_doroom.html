@@ -68,13 +68,12 @@
             for (var i = 0; i < len_creator; i++) {
                 var creatorsID = quizList[i].UserID
                 sql_creator = sql_creator + `StudentID = ${creatorsID}`;
-                if (i != len_creator && len_creator != 1) {
+                if (i != len_creator - 1 && len_creator != 1) {
                     sql_creator = sql_creator + ` or `
                 }
             }
             sql_creator = sql_creator + `;`;
             var objects_creator = await osql.connect(sql_creator);
-            console.log(objects_creator);
             for (var i = 0; i < objects_creator.length; i++) {
                 var object_creator = objects_creator[i];
                 quiz_creator[object_creator.StudentID] = `${object_creator.Name}`;
