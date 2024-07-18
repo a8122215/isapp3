@@ -143,13 +143,15 @@
                     sql_log = sql_log + `(${quiz.ID},${me.studentid},'correct')`
                     sql_Level_Answer = sql_Level_Answer + `QuestionID = ${quiz.ID}`;
                     sql_Level_Try = sql_Level_Try + `QuestionID = ${quiz.ID}`;
+                    if (t != cm_len - 1) {
+                        sql_Level_Answer = sql_Level_Answer + ` or `;
+                    }
                 } else {
                     sql_log = sql_log + `(${quiz.ID},${me.studentid},'miss')`;
                     sql_Level_Try = sql_Level_Try + `QuestionID = ${quiz.ID}`;
                 }
                 if (t != cm_len - 1) {
                     sql_log = sql_log + `,`;
-                    sql_Level_Answer = sql_Level_Answer + ` or `;
                     sql_Level_Try = sql_Level_Try + ` or `;
                 }
             }
