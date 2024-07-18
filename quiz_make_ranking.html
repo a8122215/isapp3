@@ -24,17 +24,20 @@
         async function createRanking() {
             var sql = `select * from Users;`;
             var objects = await osql.connect(sql);
+            var sql2 = `select Name,UserID, sum(AnswerCount)/sum(TryCount)*100 from Questions inner join QuizLevel on Questions.ID = QuizLevel.QuestionID inner join Users on Questions.UserID = Users.StudentID group by UserID order by sum(AnswerCount)/sum(TryCount)*100 desc;`;
+            var objects2 = await osql.connect(sql2);
             var html = '';
             html = html + '<table border="1">';
-            for (var i = 0; i < objects.length; i++) {
-                var sql2 = `select UserID, sum(AnswerCount)/sum(TryCount)*100 from Questions inner join QuizLevel on Questions.ID = QuizLevel.QuestionID group by UserID order by sum(AnswerCount)/sum(TryCount)*100 desc;`;
-                var objects2 = await osql.connect(sql2);
+            html = html + '<tr><td>順位</td><td>参加者</td><td>正答率</td></tr>'
+            console.log(objects)
+            for (var i = 0; i < objects2.length; i++) {
                 var score = objects2[i];
+                console.log(i + '回目')
+                console.log(score);
                 var number = Math.round(score['sum(AnswerCount)/sum(TryCount)*100']);
                 if (number != null) {
-                    html = html + `<tr><td>${score.UserID}</td><td>${number + "%"}</td></tr>`;
+                    html = html + `<tr><td>${i + 1}</td><td>${score.Name}</td><td>${number + "%"}</td></tr>`;
                 }
-                console.log(score);
             }
             html = html + '</table>';
             document.getElementById('Ranking').innerHTML = html;
