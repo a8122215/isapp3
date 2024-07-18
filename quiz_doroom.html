@@ -83,6 +83,7 @@
         function Quiz() {
             document.getElementById('answer_button').style.visibility = 'visible';
             document.getElementById('next').style.visibility = 'hidden';
+            document.getElementById('result').style.visibility = 'hidden';
             document.getElementById('kotae').innerHTML = '';
             var quiz = quizList[nowQuiz];
             var quiz_id = quiz.UserID;
@@ -119,6 +120,7 @@
                 document.getElementById('answer_button').style.visibility = 'hidden';
                 document.getElementById('next').style.visibility = 'visible';
             }
+            document.getElementById('result').style.visibility = 'visible';
             localStorage.setItem('Quiz', JSON.stringify(nowQuiz));
             localStorage.setItem('correct', JSON.stringify(correct_miss));
         }
@@ -129,21 +131,6 @@
 
         async function end() {
             console.log(correct_miss)
-            // var sql_quiz2 = `select * from (Questions inner join Classes on Questions.ID = Classes.QuestionID) inner join QuizLevel on Classes.QuestionID = QuizLevel.QuestionID where RoomID = ${roomID};`;
-            // var quizList2 = await osql.connect(sql_quiz2);
-            // console.log(correct_miss);
-            // var parcent;
-            // for (var i = 0; i < correct_miss.length; i++) {
-            //     if (correct_miss[i]) {
-            //         parcent = + 1;
-            //         var Acount = quizList2[i].AnswerCount + 1;
-            //         var sql_answer = `update QuizLevel set AnswerCount = '${Acount}' where QuestionID = ${quizList2[i].QuestionID};`;
-            //         await osql.connect(sql_answer);
-            //     }
-            //     var Tcount = quizList2[i].TryCount + 1;
-            //     var sql_try = `update QuizLevel set TryCount = '${Tcount}' where QuestionID = ${quizList2[i].QuestionID};`;
-            //     await osql.connect(sql_try);
-            // }
             var parcent = 0;;
             var sql_log = `insert into Log (QuestionID,UserID,Result) values `
             var sql_Level_Answer = `update QuizLevel set AnswerCount = AnswerCount + 1 where `
@@ -179,13 +166,6 @@
 
             window.location.href = `quiz_resultroom.html?roomId=${roomID}`
         }
-
-        function loadButtonPressed() {
-            var loaded = localStorage.getItem('eiwa');
-            loaded = JSON.parse(loaded);
-            console.log(loaded);
-            fruits = loaded;
-        }
     </script>
 
 </head>
@@ -194,6 +174,7 @@
     <h1><span id="roomname"></span></h1>
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+        <a href="quiz_robby.html">robby</a>　
         <a href="quiz_index.html">top</a>
     </div>
     <hr>
