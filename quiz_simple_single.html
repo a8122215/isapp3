@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+
+    <script>
+        osql.requireLogin();
+
+        var me;
+        var roomID = osql.getParam('roomId');
+        var nowQuiz = 0;
+        var quizList;
+        var seikai = 0;
+        var quiz_creator = {};
+        var kazu = 0;
+
+        $(document).ready(async function () {
+            me = await osql.getMe();
+            document.getElementById('firstname').innerHTML = me.fname;
+            document.getElementById('lastname').innerHTML = me.lname;
+        });
+
+        async function makeQuiz() {
+            quizList = [];
+            var sql_quiz = `select * from Questions order by RAND() LIMIT ${kazu};`;
+            quizList = await osql.connect(sql_quiz);
+        }
+
+        async function makeCreator() {
+            quiz_creator = {};
+            var sql_creator = `select * from Users where `
+            var len_creator = quizList.length;
+            for (var i = 0; i < len_creator; i++) {
+                var creatorsID = quizList[i].UserID
+                sql_creator = sql_creator + `StudentID = ${creatorsID}`;
+                if (i != len_creator - 1 && len_creator != 1) {
+                    sql_creator = sql_creator + ` or `
+                }
+            }
+            sql_creator = sql_creator + `;`;
+            var objects_creator = await osql.connect(sql_creator);
+            for (var i = 0; i < objects_creator.length; i++) {
+                var object_creator = objects_creator[i];
+                quiz_creator[object_creator.StudentID] = `${object_creator.Name}`;
+            }
+        }
+
+        function Quiz() {
+            console.log(quizList)
+            console.log(quiz_creator)
+            document.getElementById('answer_button').style.visibility = 'visible';
+            document.getElementById('next').style.visibility = 'hidden';
+            document.getElementById('result').style.visibility = 'hidden';
+            document.getElementById('kotae').innerHTML = '　';
+            var quiz = quizList[nowQuiz];
+            var quiz_id = quiz.UserID;
+            var creator = quiz_creator[quiz_id];
+            var sentence = quiz.Quiz;
+            var choise1 = quiz.Choise1;
+            var choise2 = quiz.Choise2;
+            var choise3 = quiz.Choise3;
+            var answer = quiz.Answer;
+            document.getElementById('quiz_creator').innerHTML = creator;
+            document.getElementById('Quiz').innerHTML = sentence;
+            document.getElementById('Choise1').innerHTML = choise1;
+            document.getElementById('Choise2').innerHTML = choise2;
+            document.getElementById('Choise3').innerHTML = choise3;
+            document.getElementById('result').innerHTML = '正解の選択肢 : ' + answer;
+        }
+
+        function answer() {
+            var quiz = quizList[nowQuiz];
+            var answer_choise = quiz.Answer;
+            var answer = document.getElementById('answer').value;
+            nowQuiz += 1;
+            if (answer == answer_choise) {
+                seikai += 1;
+                answer = document.getElementById('kotae').innerHTML = '正解';
+            } else {
+                answer = document.getElementById('kotae').innerHTML = '不正解';
+            }
+            if (nowQuiz >= quizList.length) {
+                document.getElementById('answer_button').style.visibility = 'hidden';
+                document.getElementById('end').style.visibility = 'visible';
+                document.getElementById('kekka').innerHTML = `${kazu}問中${seikai}問正解`;
+                document.getElementById('kekka').style.visibility = 'visible';
+            } else {
+                document.getElementById('answer_button').style.visibility = 'hidden';
+                document.getElementById('next').style.visibility = 'visible';
+            }
+            document.getElementById('result').style.visibility = 'visible';
+        }
+
+        function next() {
+            Quiz();
+        }
+
+        async function start() {
+            kazu = Number(document.getElementById('mondai').value);
+            document.getElementById('kekka').style.visibility = 'hidden';
+            document.getElementById('end').style.visibility = 'hidden';
+            seikai = 0;
+            nowQuiz = 0;
+            await makeQuiz();
+            await makeCreator();
+            await Quiz();
+        }
+    </script>
+
+</head>
+
+<body>
+    <h1>single!!</h1>
+    <div style="text-align: right;">
+        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+        <a href="quiz_robby.html">robby</a>　
+        <a href="quiz_index.html">top</a>
+    </div>
+    <hr>
+    問題数：<input id="mondai" type="text" value="10"> <button onclick="start()">開始</button>
+    <hr>
+    <div>
+        <p>作問者　：　<span id="quiz_creator"></span></p>
+        <p>問題文　：　<span id="Quiz"></span></p>
+        <p>選択肢１：　<span id="Choise1"></span></p>
+        <p>選択肢２：　<span id="Choise2"></span></p>
+        <p>選択肢３：　<span id="Choise3"></span></p>
+        正解の選択肢
+        <select id="answer">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
+        <br>
+        <button onclick="answer()" id="answer_button">回答</button>
+        <p id="kotae"></p>
+        <p style="visibility: hidden" id="result"></p>
+        <hr>
+        <p style="visibility: hidden" id="kekka"></p>
+        <button onclick="next()" style="visibility: hidden" id="next">次の問題へ</button>
+        <button onclick="start()" style="visibility: hidden" id="end">もう一回</button>
+    </div>
+    <br>
+    <div id="comments"></div>
+</body>
+
+</html>
