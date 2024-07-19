@@ -97,7 +97,8 @@
         async function CreateName() {
             var Nickname = document.getElementById('Nickname').value;
             var sql = `update Users set Name = '${Nickname}' where StudentID = ${me.studentid};`;
-            await osql.connectInsert(sql);
+            console.log(sql)
+            await osql.connect(sql);
             document.getElementById('Nickname').value = '';
         }
 
