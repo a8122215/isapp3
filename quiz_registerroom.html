@@ -23,7 +23,7 @@
             var object = await osql.connect(sql_odai);
             odai = object[0].Name;
 
-            var sql_participation = `select * from Participation where UserID = ${me.studentid} AND RoomID = ${roomID};`;
+            var sql_participation = `select * from Participation where UserID = '${me.studentid}' AND RoomID = ${roomID};`;
             var object_participation = await osql.connect(sql_participation);
             check = object_participation.length;
             if (odai == '') {
@@ -38,7 +38,7 @@
         });
 
         async function Participation_register() {
-            var sql_participation = `select * from Participation where UserID = ${me.studentid} AND RoomID = ${roomID};`;
+            var sql_participation = `select * from Participation where UserID = '${me.studentid}' AND RoomID = ${roomID};`;
             var object_participation = await osql.connect(sql_participation);
             var sql_state = `select * from Rooms where ID = ${roomID};`;
             var object_state = await osql.connect(sql_state);
@@ -47,7 +47,7 @@
             console.log(state);
             console.log(object_participation.length)
             if (object_participation.length == 0 && state == 0) {
-                var sql_participation_register = `insert into Participation (UserID,RoomID) values (${me.studentid}, ${roomID});`;
+                var sql_participation_register = `insert into Participation (UserID,RoomID) values ('${me.studentid}', ${roomID});`;
                 object_participation_register = await osql.connectInsert(sql_participation_register);
             }
         }
@@ -68,7 +68,7 @@
                 var answer = document.getElementById('answer').value;
                 if (quiz != '' && choise1 != '' && choise2 != '' && choise3 != '') {
                     var sql_question = `insert into Questions (Quiz,Choise1,Choise2,Choise3,Answer,UserID)
-                    values ('${quiz}','${choise1}','${choise2}','${choise3}',${answer},${me.studentid});`;
+                    values ('${quiz}','${choise1}','${choise2}','${choise3}',${answer},'${me.studentid}');`;
                     var object_question = await osql.connectInsert(sql_question);
 
                     var sql_room_question = `insert into Classes (RoomID,QuestionID)
@@ -95,7 +95,7 @@
         }
 
         async function move_check() {
-            var sql_classes = `select * from Classes inner join Questions on Classes.QuestionID = Questions.ID where RoomID = ${roomID} and UserID = ${me.studentid};`;
+            var sql_classes = `select * from Classes inner join Questions on Classes.QuestionID = Questions.ID where RoomID = ${roomID} and UserID = '${me.studentid}';`;
             var object_classes = await osql.connect(sql_classes);
             if (object_classes.length != 0) {
                 window.location.href = `quiz_waitroom.html?roomId=${roomID}`

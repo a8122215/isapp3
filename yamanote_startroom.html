@@ -41,7 +41,7 @@
 
         async function kaitou() {
             var answer = document.getElementById('kaitou').value;
-            var sql = `select * from Participation where roomid = ${roomId} and userid = ${me.studentid};`;
+            var sql = `select * from Participation where roomid = ${roomId} and userid = '${me.studentid}';`;
             var pid = await osql.connect(sql);
             pid = pid[0].id;
             sql = `select * from Rooms where id = ${roomId};`;
@@ -62,7 +62,7 @@
             sql = `select * from Participation where roomid = ${roomId};`
             var objects_ninzu = await osql.connect(sql);
             var ninzu = objects_ninzu.length
-            sql = `select * from Participation where roomid = ${roomId} and userid = ${me.studentid};`
+            sql = `select * from Participation where roomid = ${roomId} and userid = '${me.studentid}';`
             var objects_order = await osql.connect(sql);
             var order = objects_order[0].orders
             console.log(order)

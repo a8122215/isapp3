@@ -27,7 +27,7 @@
             var sql = `insert into Rooms (Name,State) values('${name}',0);`;
             var roomID = await osql.connectInsert(sql);
             console.log(roomID);
-            var sql_participation_register = `insert into Participation (UserID,RoomID) values (${me.studentid}, ${roomID});`;
+            var sql_participation_register = `insert into Participation (UserID,RoomID) values ('${me.studentid}', ${roomID});`;
             var object_participation_register = await osql.connectInsert(sql_participation_register);
             refreshRooms();
             document.getElementById('roomname').value = '';
@@ -39,7 +39,7 @@
             var html = '';
             html = html + '<table border="1">';
             html = html + '<tr><td>roomID</td><td>room名</td><td>状態</td><td>参加状態</td></tr>'
-            var sql_participation = `select * from Participation where UserID = ${me.studentid};`;
+            var sql_participation = `select * from Participation where UserID = '${me.studentid}';`;
             var objects_participation = await osql.connect(sql_participation);
             var inRoom = [];
             for (var i = 0; i < objects_participation.length; i++) {
@@ -90,14 +90,14 @@
             html = html + '</table>';
             document.getElementById('rooms').innerHTML = html;
 
-            var sql_name = `select * from Users where StudentID = ${me.studentid};`;
+            var sql_name = `select * from Users where StudentID = '${me.studentid}';`;
             var objects_name = await osql.connect(sql_name);
             document.getElementById('CurrnetName').innerHTML = objects_name[0].Name;
         }
         async function CreateName() {
             var Nickname = document.getElementById('Nickname').value;
-            var sql = `update Users set Name = '${Nickname}' where StudentID = ${me.studentid};`;
-            await osql.connectInsert(sql);
+            var sql = `update Users set Name = '${Nickname}' where StudentID = '${me.studentid}';`;
+            await osql.connect(sql);
             document.getElementById('Nickname').value = '';
         }
 
