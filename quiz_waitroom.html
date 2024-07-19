@@ -67,7 +67,7 @@
 
         async function memberList() {
             check = 0;
-            var sql_participation = `select * from Participation where RoomID = ${roomID}`
+            var sql_participation = `select * from Participation inner join Users on Participation.UserID = Users.StudentID where RoomID = ${roomID}`
             var objects_participation = await osql.connect(sql_participation);
 
             var sql_classes = `select * from Classes innner join Questions on QuestionID = Questions.ID where RoomID = ${roomID}`
@@ -85,7 +85,7 @@
             for (var i = 0; i < objects_participation.length; i++) {
                 var object_participation = objects_participation[i];
                 html = html + '<tr>';
-                html = html + `<td>${object_participation.UserID}</td>`;
+                html = html + `<td>${object_participation.Name}</td>`;
                 if (questionList.includes(object_participation.UserID)) {
                     html = html + `<td>登録済み</td>`;
                 } else {
